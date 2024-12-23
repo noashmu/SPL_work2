@@ -1,7 +1,11 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.MicroService;
 
+
+import bgu.spl.mics.application.messages.*;
+import bgu.spl.mics.application.objects.FusionSlam;
 /**
  * FusionSlamService integrates data from multiple sensors to build and update
  * the robot's global map.
@@ -15,9 +19,11 @@ public class FusionSlamService extends MicroService {
      *
      * @param fusionSlam The FusionSLAM object responsible for managing the global map.
      */
+    private FusionSlam fusionSlam;
+
     public FusionSlamService(FusionSlam fusionSlam) {
-        super("Change_This_Name");
-        // TODO Implement this
+        super("FusionSlamService");
+        this.fusionSlam = fusionSlam;
     }
 
     /**
@@ -27,6 +33,23 @@ public class FusionSlamService extends MicroService {
      */
     @Override
     protected void initialize() {
-        // TODO Implement this
+        this.subscribeEvent(TrackedObjectsEvent.class, (TrackedObjectsEvent event) -> {
+//            fusionSLAM.updateMap(event.getCloudPoints(), event.getObjectId());
+        });
+
+        this.subscribeEvent(PoseEvent.class, (PoseEvent event) -> {
+//            fusionSLAM.updateRobotPose(event.getPose());
+        });
+
+        this.subscribeBroadcast(TickBroadcast.class, (TickBroadcast tick) -> {
+        });
+
+        this.subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {
+             terminate();
+        });
+
+        this.subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast crash) -> {
+            terminate();
+        });
     }
 }

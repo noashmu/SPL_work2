@@ -1,4 +1,9 @@
 package bgu.spl.mics.application.services;
+import bgu.spl.mics.application.messages.CrashedBroadcast;
+import bgu.spl.mics.application.messages.DetectObjectsEvent;
+import bgu.spl.mics.application.messages.TerminatedBroadcast;
+import bgu.spl.mics.application.messages.TrackedObjectsEvent;
+import bgu.spl.mics.application.objects.LiDarWorkerTracker;
 
 import bgu.spl.mics.MicroService;
 
@@ -11,15 +16,15 @@ import bgu.spl.mics.MicroService;
  * observations.
  */
 public class LiDarService extends MicroService {
-
+    private LiDarWorkerTracker LiDarWorkerTracker;
     /**
      * Constructor for LiDarService.
      *
      * @param LiDarWorkerTracker A LiDAR Tracker worker object that this service will use to process data.
      */
     public LiDarService(LiDarWorkerTracker LiDarWorkerTracker) {
-        super("Change_This_Name");
-        // TODO Implement this
+        super("LidarWorkerTrackerService");
+        this.LiDarWorkerTracker=LiDarWorkerTracker;
     }
 
     /**
@@ -29,6 +34,18 @@ public class LiDarService extends MicroService {
      */
     @Override
     protected void initialize() {
-        // TODO Implement this
+       this.subscribeEvent(DetectObjectsEvent.class, (DetectObjectsEvent event) -> {
+//            var cloudPoints = workerTracker.getCloudPointsForObject(event.getObjectId());
+//            this.sendEvent(new TrackedObjectsEvent(cloudPoints, event.getObjectId()));
+        });
+
+
+        this.subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {
+            terminate();
+        });
+
+       this.subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast crash) -> {
+            terminate();
+       });
     }
 }
