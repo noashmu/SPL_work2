@@ -33,12 +33,20 @@ public class FusionSlamService extends MicroService {
      */
     @Override
     protected void initialize() {
+        //בדיקה אם האובייקטים כבר קיימים?
         this.subscribeEvent(TrackedObjectsEvent.class, (TrackedObjectsEvent event) -> {
-//            fusionSLAM.updateMap(event.getCloudPoints(), event.getObjectId());
+            synchronized (fusionSlam) {
+        //        fusionSlam.addLandMark(event.getLandMark());
+            }
+         //   this.complete(event,);
         });
 
         this.subscribeEvent(PoseEvent.class, (PoseEvent event) -> {
-//            fusionSLAM.updateRobotPose(event.getPose());
+            synchronized (fusionSlam) {
+                fusionSlam.addPose(event.getPose());
+            }
+       //     this.complete(event, true);
+
         });
 
         this.subscribeBroadcast(TickBroadcast.class, (TickBroadcast tick) -> {

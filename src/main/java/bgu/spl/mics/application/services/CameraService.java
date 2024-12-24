@@ -9,6 +9,7 @@ import bgu.spl.mics.application.messages.DetectObjectsEvent;
 import bgu.spl.mics.application.messages.TerminatedBroadcast;
 import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.objects.Camera;
+import bgu.spl.mics.application.objects.STATUS;
 
 
 /**
@@ -39,9 +40,25 @@ public class CameraService extends MicroService {
     @Override
     protected void initialize() {
         this.subscribeBroadcast(TickBroadcast.class, (TickBroadcast tick) -> {
-//            var detectedObjects = camera.detectObjects();
-//            sendEvent(new DetectObjectsEvent(detectedObjects));
+            int currentTick = tick.getTick();
+
+            if (camera.isActive()) {
+                if (camera.shouldSendEvent(currentTick)) {
+                    DetectObjectsEvent detectObjectsEvent = camera.createDetectObjectsEvent(currentTick);
+
+                    if (detectObjectsEvent != null) {
+                        sendEvent(detectObjectsEvent);
+                    }
+                }
+            }
+
+                if (camera.detectError(currentTick)) {
+                    sendBroadcast(new CrashedBroadcast());
+                    terminate();
+                }
+
         });
+
         subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {
             terminate();
         });
@@ -51,4 +68,5 @@ public class CameraService extends MicroService {
         });
    }
 }
+
 

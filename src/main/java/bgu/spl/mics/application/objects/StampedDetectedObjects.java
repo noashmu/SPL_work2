@@ -15,4 +15,12 @@ public class StampedDetectedObjects {
         time = 0;
         DetectedObjects = new ArrayList<DetectedObject>();
     }
+    public int getTime()
+    {
+        return this.time;
+    }
+    public List<DetectedObject> getDetectedObjects()
+    {
+        return this.DetectedObjects;
+    }
 }
