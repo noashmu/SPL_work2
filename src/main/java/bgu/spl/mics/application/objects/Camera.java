@@ -55,4 +55,15 @@ public class Camera {
     public STATUS getStatus() {
         return status;
     }
+
+    public boolean detectError(int currTick)
+    {
+        List<DetectedObject> detectedObjects = getDetectedObject(currTick);
+        for (DetectedObject obj : detectedObjects) {
+            if ("ERROR".equals(obj.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

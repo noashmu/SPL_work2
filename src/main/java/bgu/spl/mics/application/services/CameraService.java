@@ -50,12 +50,13 @@ public class CameraService extends MicroService {
                         sendEvent(detectObjectsEvent);
                     }
                 }
+            }
 
-                if (camera.getStatus()== STATUS.ERROR) { //איך בודקים אם יש שגיאות?
+                if (camera.detectError(currentTick)) {
                     sendBroadcast(new CrashedBroadcast());
                     terminate();
                 }
-            }
+
         });
 
         subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {
