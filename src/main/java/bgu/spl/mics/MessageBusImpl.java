@@ -38,9 +38,6 @@ public class MessageBusImpl implements MessageBus {
 
 			subscribers.get(type).add(m);
 		}
-
-
-
 	}
 
 	@Override
@@ -126,8 +123,6 @@ public class MessageBusImpl implements MessageBus {
 		return queue.take(); //לבדוק
 
 	}
-
-
 
 	public static MessageBusImpl getInstance() {
 		if (instance == null) {
