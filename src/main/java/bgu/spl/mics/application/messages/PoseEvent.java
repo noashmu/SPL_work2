@@ -8,11 +8,7 @@ public class PoseEvent implements Event<Void> {
 
     private Pose pose;
 
-    /**
-     * Constructor for PoseEvent.
-     *
-     * @param pose The current pose of the robot.
-     */
+
     public PoseEvent(Pose pose) {
         this.pose = pose;
     }
