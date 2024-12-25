@@ -43,7 +43,6 @@ public class FusionSlamService extends MicroService {
         });
 
         this.subscribeEvent(PoseEvent.class, (PoseEvent event) -> {
-//            fusionSLAM.updateRobotPose(event.getPose());
             synchronized (fusionSlam) {
                 fusionSlam.addPose(event.getPose());
             }

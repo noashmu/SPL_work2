@@ -20,4 +20,12 @@ public class LiDarWorkerTracker {
         this.status = status;
         lastTrackedObjects = new ArrayList<TrackedObject>();
     }
+    public int getId()
+    {
+        return this.id;
+    }
+    public List<StampedCloudPoints> getCloudPointsForObject(List<DetectedObject> detectedObjects) {
+   //     return List.of(); // Placeholder
+        return null;
+    }
 }

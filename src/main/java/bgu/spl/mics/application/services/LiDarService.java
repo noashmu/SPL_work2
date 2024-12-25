@@ -3,6 +3,7 @@ import bgu.spl.mics.application.messages.CrashedBroadcast;
 import bgu.spl.mics.application.messages.DetectObjectsEvent;
 import bgu.spl.mics.application.messages.TerminatedBroadcast;
 import bgu.spl.mics.application.messages.TrackedObjectsEvent;
+import bgu.spl.mics.application.objects.CloudPoint;
 import bgu.spl.mics.application.objects.LiDarWorkerTracker;
 
 import bgu.spl.mics.MicroService;
@@ -17,6 +18,7 @@ import bgu.spl.mics.MicroService;
  */
 public class LiDarService extends MicroService {
     private LiDarWorkerTracker LiDarWorkerTracker;
+
     /**
      * Constructor for LiDarService.
      *
@@ -24,7 +26,7 @@ public class LiDarService extends MicroService {
      */
     public LiDarService(LiDarWorkerTracker LiDarWorkerTracker) {
         super("LidarWorkerTrackerService");
-        this.LiDarWorkerTracker=LiDarWorkerTracker;
+        this.LiDarWorkerTracker = LiDarWorkerTracker;
     }
 
     /**
@@ -34,18 +36,28 @@ public class LiDarService extends MicroService {
      */
     @Override
     protected void initialize() {
-       this.subscribeEvent(DetectObjectsEvent.class, (DetectObjectsEvent event) -> {
-//            var cloudPoints = workerTracker.getCloudPointsForObject(event.getObjectId());
-//            this.sendEvent(new TrackedObjectsEvent(cloudPoints, event.getObjectId()));
+        // Handle DetectObjectsEvent
+        this.subscribeEvent(DetectObjectsEvent.class, (DetectObjectsEvent event) -> {
+            try {
+                // Get cloud points and process them
+                //     CloudPoint cloudPoints = LiDarWorkerTracker.getCloudPointsForObject(event.getDetectedObjects());
+                //     TrackedObjectsEvent trackedObjectsEvent = new TrackedObjectsEvent(cloudPoints, LiDarWorkerTracker.getId());
+
+                // Send the tracked objects event
+                //      this.sendEvent(trackedObjectsEvent);
+            } catch (Exception e) {
+
+            }
         });
 
-
+        // Handle termination broadcast
         this.subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {
             terminate();
         });
 
-       this.subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast crash) -> {
+        // Handle crash broadcast
+        this.subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast crash) -> {
             terminate();
-       });
+        });
     }
 }
