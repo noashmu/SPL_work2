@@ -1,8 +1,5 @@
 package bgu.spl.mics.application.services;
-import bgu.spl.mics.application.messages.CrashedBroadcast;
-import bgu.spl.mics.application.messages.DetectObjectsEvent;
-import bgu.spl.mics.application.messages.TerminatedBroadcast;
-import bgu.spl.mics.application.messages.TrackedObjectsEvent;
+import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.objects.CloudPoint;
 import bgu.spl.mics.application.objects.LiDarWorkerTracker;
 
@@ -39,13 +36,21 @@ public class LiDarService extends MicroService {
         // Handle DetectObjectsEvent
         this.subscribeEvent(DetectObjectsEvent.class, (DetectObjectsEvent event) -> {
             try {
-                //     CloudPoint cloudPoints = LiDarWorkerTracker.getCloudPointsForObject(event.getDetectedObjects());
-                //     TrackedObjectsEvent trackedObjectsEvent = new TrackedObjectsEvent(cloudPoints, LiDarWorkerTracker.getId());
+                //CloudPoint cloudPoints = LiDarWorkerTracker.getCloudPointsForObject(event.getDetectedObjects());
+                //LiDarWorkerTracker.setLastTrackedObjects(event.getDetectedObjects());
+
+                TrackedObjectsEvent trackedObjectsEvent = new TrackedObjectsEvent(LiDarWorkerTracker.getLastTrackedObjects(),event.getTime());
 
                 // Send the tracked objects event
-                //      this.sendEvent(trackedObjectsEvent);
+                this.sendEvent(trackedObjectsEvent);
             } catch (Exception e) {
 
+            }
+        });
+
+        this.subscribeBroadcast(TickBroadcast.class, (TickBroadcast event) -> {
+            if(LiDarWorkerTracker.shouldSendEvent(event.getTick())){
+                
             }
         });
 

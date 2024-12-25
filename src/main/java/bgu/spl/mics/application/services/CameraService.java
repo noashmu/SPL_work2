@@ -58,7 +58,11 @@ public class CameraService extends MicroService {
 
         });
 
-        subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {
+        this.subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {
+            terminate();
+        });
+
+        this.subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast crash) -> {
             terminate();
         });
    }

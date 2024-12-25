@@ -1,5 +1,7 @@
 package bgu.spl.mics.application.objects;
 
+import bgu.spl.mics.application.messages.TrackedObjectsEvent;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +25,20 @@ public class LiDarWorkerTracker {
     public int getId()
     {
         return this.id;
+    }
+
+    public List<TrackedObject> getLastTrackedObjects(){
+        return this.lastTrackedObjects;
+    }
+
+//    public void setLastTrackedObjects(List<DetectedObject> detectedObjectList){
+//        this.lastTrackedObjects = new ArrayList<TrackedObject>()
+//    }
+
+    public boolean shouldSendEvent(int currTick) {
+        if (currTick >= this.frequency && currTick % this.frequency == 0)
+            return true;
+        return false;
     }
 
 }
