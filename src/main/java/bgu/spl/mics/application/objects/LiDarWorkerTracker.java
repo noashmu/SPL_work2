@@ -24,8 +24,5 @@ public class LiDarWorkerTracker {
     {
         return this.id;
     }
-    public List<StampedCloudPoints> getCloudPointsForObject(List<DetectedObject> detectedObjects) {
-   //     return List.of(); // Placeholder
-        return null;
-    }
+
 }

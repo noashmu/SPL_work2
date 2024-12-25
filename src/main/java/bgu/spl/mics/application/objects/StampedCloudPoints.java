@@ -10,12 +10,19 @@ import java.util.List;
 public class StampedCloudPoints {
     private String id;
     private int time;
-    //נכון?
-    private List<List<CloudPoint>> cloudPoints;
+    private List<CloudPoint> cloudPoints;
 
     public StampedCloudPoints(String id, int time) {
         this.id = id;
         this.time = time;
-        this.cloudPoints = new ArrayList<List<CloudPoint>>();
+        this.cloudPoints = new ArrayList<>();
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public List<CloudPoint> getPoints() {
+        return cloudPoints;
     }
 }

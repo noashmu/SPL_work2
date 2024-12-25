@@ -8,10 +8,12 @@ import java.util.List;
  * It provides access to cloud point data and other relevant information for tracked objects.
  */
 public class LiDarDataBase {
+    private static LiDarDataBase instance = null; // Singleton instance
 
     private List<StampedCloudPoints> cloudPoints;
-    public LiDarDataBase() {
-        cloudPoints = new ArrayList<StampedCloudPoints>();
+
+    private LiDarDataBase() {
+        cloudPoints = new ArrayList<>();
     }
 
     /**
@@ -21,7 +23,21 @@ public class LiDarDataBase {
      * @return The singleton instance of LiDarDataBase.
      */
     public static LiDarDataBase getInstance(String filePath) {
-        // TODO: Implement this
-        return null;
+        if (instance == null) {
+            instance = new LiDarDataBase();
+            instance.loadDataFromFile(filePath);
+        }
+        return instance;
+    }
+
+    public List<StampedCloudPoints> getCloudPoints() {
+        return this.cloudPoints; // Return a copy for safety
+    }
+
+    private void loadDataFromFile(String filePath) {
+
+    }
+    public void addCloudPoints(StampedCloudPoints stampedCloudPoints) {
+        cloudPoints.add(stampedCloudPoints);
     }
 }
