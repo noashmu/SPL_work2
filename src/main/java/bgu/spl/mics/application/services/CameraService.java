@@ -39,14 +39,26 @@ public class CameraService extends MicroService {
     @Override
     protected void initialize() {
         this.subscribeBroadcast(TickBroadcast.class, (TickBroadcast tick) -> {
-//            var detectedObjects = camera.detectObjects();
-//            sendEvent(new DetectObjectsEvent(detectedObjects));
-        });
-        subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {
-            terminate();
+            int currentTick = tick.getTick();
+
+            if (camera.isActive()) {
+                if (camera.shouldSendEvent(currentTick)) {
+                    DetectObjectsEvent detectObjectsEvent = camera.createDetectObjectsEvent(currentTick);
+
+                    if (detectObjectsEvent != null) {
+                        sendEvent(detectObjectsEvent);
+                    }
+                }
+            }
+
+            if (camera.detectError(currentTick)) {
+                sendBroadcast(new CrashedBroadcast());
+                terminate();
+            }
+
         });
 
-        subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast crash) -> {
+        subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {
             terminate();
         });
    }

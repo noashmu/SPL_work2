@@ -12,8 +12,28 @@ public class FusionSlam {
     private ArrayList<LandMark> landmarks;
     private List<Pose> poses;
 
+    private FusionSlam()
+    {
+        this.landmarks=new ArrayList<>();
+        this.poses=new ArrayList<>();
+    }
     // Singleton instance holder
     private static class FusionSlamHolder {
         // TODO: Implement singleton instance logic.
+        private static final FusionSlam INSTANCE = new FusionSlam();
     }
+
+public static FusionSlam getInstance() {
+    return FusionSlamHolder.INSTANCE;
 }
+
+public void addLandMark(LandMark l)
+{
+    this.landmarks.add(l);
+}
+
+public void addPose(Pose p)
+{
+    this.poses.add(p);
+}
+    }
