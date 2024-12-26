@@ -17,4 +17,12 @@ public class LandMark {
         this.description = description;
         coordinates = new ArrayList<CloudPoint>();
     }
+    public String getId()
+    {
+        return this.id;
+    }
+    public List<CloudPoint> getCoordinates()
+    {
+        return this.coordinates;
+    }
 }

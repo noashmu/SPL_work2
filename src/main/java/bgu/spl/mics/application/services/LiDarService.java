@@ -35,12 +35,7 @@ public class LiDarService extends MicroService {
     protected void initialize() {
         // Handle DetectObjectsEvent
         this.subscribeEvent(DetectObjectsEvent.class, (DetectObjectsEvent event) -> {
-            try {
                 LiDarWorkerTracker.setLastTrackedObjects(event.getDetectedObjects(),event.getTime());
-
-            } catch (Exception e) {
-
-            }
         });
 
         this.subscribeBroadcast(TickBroadcast.class, (TickBroadcast event) -> {

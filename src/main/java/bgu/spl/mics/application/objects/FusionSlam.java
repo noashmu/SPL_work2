@@ -27,9 +27,18 @@ public static FusionSlam getInstance() {
     return FusionSlamHolder.INSTANCE;
 }
 
-public void addLandMark(LandMark l)
+public void addLandMark(List<TrackedObject> l)
 {
-    this.landmarks.add(l);
+    for (LandMark landMark:landmarks)
+    {
+        for (TrackedObject obj:l)
+        {
+            if (landMark.getId().equals(obj.getId()))
+            {
+  //              LandMark newLandMark = landMark.getCoordinates()
+            }
+        }
+    }
 }
 
 public void addPose(Pose p)

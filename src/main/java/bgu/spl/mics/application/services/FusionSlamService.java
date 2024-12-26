@@ -35,9 +35,9 @@ public class FusionSlamService extends MicroService {
     protected void initialize() {
         //בדיקה אם האובייקטים כבר קיימים?
         this.subscribeEvent(TrackedObjectsEvent.class, (TrackedObjectsEvent event) -> {
-//            fusionSLAM.updateMap(event.getCloudPoints(), event.getObjectId());
+            //   fusionSLAM.updateMap(event.getCloudPoints(), event.getObjectId());
             synchronized (fusionSlam) {
-                //        fusionSlam.addLandMark(event.getLandMark());
+                fusionSlam.addLandMark(event.getTrackedObjects());
             }
             //   this.complete(event,);
         });

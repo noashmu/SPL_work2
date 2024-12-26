@@ -29,4 +29,8 @@ public class TrackedObject {
         this.time = time;
         this.coordinates = cloudPoints;
     }
+    public String getId()
+    {
+        return this.id;
+    }
 }
