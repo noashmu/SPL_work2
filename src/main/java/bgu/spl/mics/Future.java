@@ -37,7 +37,7 @@ public class Future<T> {
 				try {
 					lock.wait();
 				} catch (InterruptedException e) {
-					Thread.currentThread().interrupt();  // למדנו? צריך את זה?
+					Thread.currentThread().interrupt();
 				}
 			}
 			return result;

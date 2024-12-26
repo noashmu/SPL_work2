@@ -39,7 +39,7 @@ public class TimeService extends MicroService {
                     currentTick++;
                     this.sendBroadcast(new TickBroadcast(currentTick));
                 } catch (InterruptedException e) {
-                    //e.printStackTrace();
+                    //Thread.currentThread().interrupt();
                 }
 
                 if (currentTick >= duration) {

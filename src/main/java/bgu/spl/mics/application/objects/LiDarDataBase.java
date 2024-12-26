@@ -8,7 +8,9 @@ import java.util.List;
  * It provides access to cloud point data and other relevant information for tracked objects.
  */
 public class LiDarDataBase {
-    private static LiDarDataBase instance = null; // Singleton instance
+    private static class LidarDataBaseHolder{
+        private static LiDarDataBase instance = new LiDarDataBase(); // Singleton instance
+    }
 
     private List<StampedCloudPoints> cloudPoints;
 
@@ -23,11 +25,8 @@ public class LiDarDataBase {
      * @return The singleton instance of LiDarDataBase.
      */
     public static LiDarDataBase getInstance(String filePath) {
-        if (instance == null) {
-            instance = new LiDarDataBase();
-            instance.loadDataFromFile(filePath);
-        }
-        return instance;
+        LidarDataBaseHolder.instance.loadDataFromFile(filePath); //not sure its good
+        return LidarDataBaseHolder.instance;
     }
 
     public ArrayList<ArrayList<CloudPoint>> getCloudPoints(List<DetectedObject> detectedObjectList) {

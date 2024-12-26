@@ -15,10 +15,13 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Only private fields and methods can be added to this class.
  */
 public class MessageBusImpl implements MessageBus {
-	private static MessageBusImpl instance=null;
 	private final Map<Class<? extends Message>, Queue<MicroService>> subscribers;
 	private final Map<MicroService, BlockingQueue<Message>> microServicesQueues;
 	private final Map<Event<?>,Future<?>> futureForEvents;
+
+	private static class MessageBusImplHolder {
+		private static MessageBusImpl instance = new MessageBusImpl();
+	}
 
 	private MessageBusImpl(){
 		subscribers=new ConcurrentHashMap<>();
@@ -124,10 +127,7 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	public static MessageBusImpl getInstance() {
-		if (instance == null) {
-			instance = new MessageBusImpl();
-		}
-		return instance;
+		return MessageBusImplHolder.instance;
 	}
 
 

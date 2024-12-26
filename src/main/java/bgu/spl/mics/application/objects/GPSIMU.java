@@ -17,4 +17,12 @@ public class GPSIMU {
         this.status = status;
         poseList = new ArrayList<Pose>();
     }
+
+    public Pose getPose(int time){
+        for(Pose pose : poseList){
+            if (time==pose.getTime())
+                return pose;
+        }
+        return null;
+    }
 }
