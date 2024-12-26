@@ -31,9 +31,16 @@ public class LiDarWorkerTracker {
         return this.lastTrackedObjects;
     }
 
-//    public void setLastTrackedObjects(List<DetectedObject> detectedObjectList){
-//        this.lastTrackedObjects = new ArrayList<TrackedObject>()
-//    }
+    public void setLastTrackedObjects(List<DetectedObject> detectedObjectList, int time){
+        this.lastTrackedObjects = new ArrayList<>();
+        ArrayList<ArrayList<CloudPoint>> cloudPoints = LiDarDataBase.getInstance().getCloudPoints(detectedObjectList);
+        int i=0;
+
+        for(DetectedObject detectedObject : detectedObjectList){
+            this.lastTrackedObjects.add(new TrackedObject(detectedObject,cloudPoints.get(i), time));
+            i++;
+        }
+    }
 
     public boolean shouldSendEvent(int currTick) {
         if (currTick >= this.frequency && currTick % this.frequency == 0)

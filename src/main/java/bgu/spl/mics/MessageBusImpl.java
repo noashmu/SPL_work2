@@ -39,6 +39,7 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	@Override
+	@Override
 	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
 		synchronized (subscribers)
 		{

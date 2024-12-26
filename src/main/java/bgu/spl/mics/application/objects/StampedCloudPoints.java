@@ -10,7 +10,7 @@ import java.util.List;
 public class StampedCloudPoints {
     private String id;
     private int time;
-    private List<CloudPoint> cloudPoints;
+    private ArrayList<ArrayList<Double>> cloudPoints;
 
     public StampedCloudPoints(String id, int time) {
         this.id = id;
@@ -22,7 +22,9 @@ public class StampedCloudPoints {
         return time;
     }
 
-    public List<CloudPoint> getPoints() {
+    public String getId(){return id;}
+
+    public ArrayList<ArrayList<Double>> getPoints() {
         return cloudPoints;
     }
 }

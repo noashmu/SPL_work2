@@ -16,4 +16,6 @@ public class DetectedObject {
     {
         return this.id;
     }
+
+    public String getDescription(){return this.description; }
 }

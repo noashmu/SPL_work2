@@ -2,6 +2,7 @@ package bgu.spl.mics.application.objects;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents an object tracked by the LiDAR.
@@ -20,5 +21,12 @@ public class TrackedObject {
         this.time = time;
         this.description = description;
         this.coordinates = new ArrayList<>();
+    }
+
+    public TrackedObject(DetectedObject detectedObject, ArrayList<CloudPoint> cloudPoints, int time) {
+        this.id = detectedObject.getId();
+        this.description = detectedObject.getDescription();
+        this.time = time;
+        this.coordinates = cloudPoints;
     }
 }
