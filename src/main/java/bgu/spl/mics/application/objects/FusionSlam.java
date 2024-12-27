@@ -39,7 +39,7 @@ public boolean isNewLandmark(TrackedObject obj)
 
 public void addLandMark(LandMark landMark)
 {
-  this.landmarks.add(landMark);
+    this.landmarks.add(landMark);
 }
 
 public void updateLandMark(TrackedObject obj)
@@ -52,7 +52,7 @@ public void updateLandMark(TrackedObject obj)
     }
 }
 
-public void addPose(Pose p)
+    public void addPose(Pose p)
 {
     this.poses.add(p);
 }
@@ -61,4 +61,7 @@ public void addPose(Pose p)
             return null;
         return poses.get(poses.size() - 1);
     }
+    public List<Pose> getPoses() { return this.poses; }
+
 }
+

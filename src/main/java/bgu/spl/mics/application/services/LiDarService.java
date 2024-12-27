@@ -1,9 +1,11 @@
 package bgu.spl.mics.application.services;
 import bgu.spl.mics.application.messages.*;
-import bgu.spl.mics.application.objects.CloudPoint;
-import bgu.spl.mics.application.objects.LiDarWorkerTracker;
+import bgu.spl.mics.application.objects.*;
 
 import bgu.spl.mics.MicroService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * LiDarService is responsible for processing data from the LiDAR sensor and
@@ -37,11 +39,17 @@ public class LiDarService extends MicroService {
         this.subscribeEvent(DetectObjectsEvent.class, (DetectObjectsEvent event) -> {
             try {
                 LiDarWorkerTracker.setLastTrackedObjects(event.getDetectedObjects(), event.getTime());
-             //   TrackedObjectsEvent t = new TrackedObjectsEvent(LiDarWorkerTracker.getLastTrackedObjects(), event.getTime());
-               // sendEvent(t);
                 if (LiDarWorkerTracker.detectError()) {
                     sendBroadcast(new CrashedBroadcast());
-                    //      saveSystemState("LiDarService"); // Save state before termination
+
+                    List<List<CloudPoint>> points = new ArrayList<>();
+                    for (TrackedObject tracked: LiDarWorkerTracker.getLastTrackedObjects()){
+                        points.addFirst(tracked.getCoordinates());
+                    }
+
+                    StatisticalFolder.getInstance().createOutputFile("output.json", true,
+                            null,"Lidar", null,
+                            points, FusionSlam.getInstance().getPoses());
                     terminate();
                 }
                 this.complete(event,true);

@@ -28,12 +28,10 @@ public class FusionSlamService extends MicroService {
      * @param fusionSlam The FusionSLAM object responsible for managing the global map.
      */
     private FusionSlam fusionSlam;
-    private StatisticalFolder statistics;
 
     public FusionSlamService(FusionSlam fusionSlam) {
         super("FusionSlamService");
         this.fusionSlam = fusionSlam;
-        this.statistics = new StatisticalFolder();
     }
 
     /**
@@ -48,7 +46,7 @@ public class FusionSlamService extends MicroService {
             synchronized (fusionSlam) {
                 try {
                     List<TrackedObject> trackedObjects = event.getTrackedObjects();
-                    statistics.addTrackedObjects(trackedObjects.size());
+                    StatisticalFolder.getInstance().addTrackedObjects(trackedObjects.size());
                     Pose currentPose = fusionSlam.getCurrentPose();
 
                     // Transform cloud points to the charging station's coordinate system
@@ -62,7 +60,9 @@ public class FusionSlamService extends MicroService {
                             LandMark newLandMark = new LandMark(obj.getId(),obj.getDescription());
                             fusionSlam.addLandMark(newLandMark);
                             fusionSlam.updateLandMark(obj);
-                        } else {
+                            StatisticalFolder.getInstance().addLandmark();
+                        }
+                        else {
                             fusionSlam.updateLandMark(obj);
                         }
                     }
@@ -89,12 +89,12 @@ public class FusionSlamService extends MicroService {
 
         this.subscribeBroadcast(TickBroadcast.class, (TickBroadcast tick) -> {
             synchronized (fusionSlam) {
-                statistics.incrementRuntime();
+                StatisticalFolder.getInstance().incrementRuntime();
             }
         });
         this.subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {
             terminate();
-            //statistics.toJSON(); //when the tun terminate it will create json file named output
+            //statistics.toJSON(); //when the run terminate it will create json file named output
         });
         this.subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast crash) -> {
             //saveSystemState("FusionSlamService"); // Save state before termination

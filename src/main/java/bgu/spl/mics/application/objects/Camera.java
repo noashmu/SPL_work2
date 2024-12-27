@@ -13,7 +13,6 @@ public class Camera {
     private int id;
     private int frequency;
     private STATUS status;
-    //maybe need to change the type of the list
     private List<StampedDetectedObjects> detectedObjectsList;
 
     public Camera(int id, int frequency, STATUS status) {
@@ -64,5 +63,17 @@ public class Camera {
             }
         }
         return false;
+    }
+
+    //אולי צריך לאחד את זה עם הפעולה הקודמת
+    public String errorDescription(int currTick)
+    {
+        List<DetectedObject> detectedObjects = getDetectedObject(currTick);
+        for (DetectedObject obj : detectedObjects) {
+            if ("ERROR".equals(obj.getId())) {
+                return obj.getDescription();
+            }
+        }
+        return null;
     }
 }

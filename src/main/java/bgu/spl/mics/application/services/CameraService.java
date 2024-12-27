@@ -8,7 +8,10 @@ import bgu.spl.mics.application.messages.CrashedBroadcast;
 import bgu.spl.mics.application.messages.DetectObjectsEvent;
 import bgu.spl.mics.application.messages.TerminatedBroadcast;
 import bgu.spl.mics.application.messages.TickBroadcast;
-import bgu.spl.mics.application.objects.Camera;
+import bgu.spl.mics.application.objects.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -46,6 +49,7 @@ public class CameraService extends MicroService {
                     DetectObjectsEvent detectObjectsEvent = camera.createDetectObjectsEvent(currentTick);
 
                     if (detectObjectsEvent != null) {
+                        StatisticalFolder.getInstance().addDetectedObjects(detectObjectsEvent.getDetectedObjects().size());
                         sendEvent(detectObjectsEvent);
                     }
                 }
@@ -53,7 +57,11 @@ public class CameraService extends MicroService {
 
             if (camera.detectError(currentTick)) {
                 sendBroadcast(new CrashedBroadcast());
-          //      saveSystemState("CameraService"); // Save state before termination
+
+                StatisticalFolder.getInstance().createOutputFile("output.json", true,
+                        camera.errorDescription(currentTick),"Camera", camera.getDetectedObject(currentTick),
+                        null, FusionSlam.getInstance().getPoses());
+                
                 terminate();
             }
 
@@ -64,7 +72,6 @@ public class CameraService extends MicroService {
         });
 
         this.subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast crash) -> {
-         //   saveSystemState("CameraService"); // Save state before termination
             terminate();
         });
    }

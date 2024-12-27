@@ -8,7 +8,6 @@ public class PoseEvent implements Event<Boolean> {
 
     private Pose pose;
 
-
     public PoseEvent(Pose pose) {
         this.pose = pose;
     }
