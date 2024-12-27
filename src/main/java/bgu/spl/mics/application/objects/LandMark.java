@@ -21,10 +21,12 @@ public class LandMark {
     {
         return this.id;
     }
+
     public List<CloudPoint> getCoordinates()
     {
         return this.coordinates;
     }
+
     public void updateCoordinates(List<CloudPoint> l)
     {
         if (l == null || l.isEmpty()) {
@@ -51,6 +53,5 @@ public class LandMark {
         if (l.size() > size) {
             coordinates.addAll(l.subList(size, l.size()));
         }
-
     }
 }

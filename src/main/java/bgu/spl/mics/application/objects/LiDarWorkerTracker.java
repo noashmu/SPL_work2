@@ -33,7 +33,7 @@ public class LiDarWorkerTracker {
 
     public void setLastTrackedObjects(List<DetectedObject> detectedObjectList, int time){
         this.lastTrackedObjects = new ArrayList<>();
-        ArrayList<ArrayList<CloudPoint>> cloudPoints = LiDarDataBase.getInstance().getCloudPoints(detectedObjectList);
+        ArrayList<ArrayList<CloudPoint>> cloudPoints = LiDarDataBase.getInstance("example input/lidar_data.json").getCloudPoints(detectedObjectList);
         int i=0;
 
         for(DetectedObject detectedObject : detectedObjectList){

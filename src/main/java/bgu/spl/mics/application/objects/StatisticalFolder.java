@@ -11,11 +11,34 @@ public class StatisticalFolder {
     private int numTrackedObjects;
     private int numLandmarks;
 
-    public StatisticalFolder(int systemRuntime, int numOfDetectedObjects, int numTrackedObjects, int numLandmarks) {
-        this.systemRuntime = systemRuntime;
-        this.numOfDetectedObjects = numOfDetectedObjects;
-        this.numTrackedObjects = numTrackedObjects;
-        this.numLandmarks = numLandmarks;
+    public StatisticalFolder() {
+        this.systemRuntime = 0;
+        this.numOfDetectedObjects = 0;
+        this.numTrackedObjects = 0;
+        this.numLandmarks = 0;
     }
 
+    public int getSystemRuntime() { return systemRuntime; }
+
+    public int getNumOfDetectedObjects() { return numOfDetectedObjects; }
+
+    public int getNumTrackedObjects() { return numTrackedObjects; }
+
+    public int getNumLandmarks() { return numLandmarks; }
+
+    public synchronized void incrementRuntime() {
+        this.systemRuntime++;
+    }
+
+    public synchronized void addDetectedObjects(int count) {
+        this.numOfDetectedObjects += count;
+    }
+
+    public synchronized void addTrackedObjects(int count) {
+        this.numTrackedObjects += count;
+    }
+
+    public synchronized void addLandmarks(int count) {
+        this.numLandmarks += count;
+    }
 }

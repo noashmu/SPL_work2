@@ -27,7 +27,7 @@ public static FusionSlam getInstance() {
     return FusionSlamHolder.INSTANCE;
 }
 
-   public boolean isNewLandmark(TrackedObject obj)
+public boolean isNewLandmark(TrackedObject obj)
    {
        for (LandMark l:landmarks)
        {
@@ -41,6 +41,7 @@ public void addLandMark(LandMark landMark)
 {
   this.landmarks.add(landMark);
 }
+
 public void updateLandMark(TrackedObject obj)
 {
     for (LandMark landMark : landmarks) {
@@ -60,4 +61,4 @@ public void addPose(Pose p)
             return null;
         return poses.get(poses.size() - 1);
     }
-    }
+}
