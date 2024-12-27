@@ -53,6 +53,7 @@ public class CameraService extends MicroService {
 
             if (camera.detectError(currentTick)) {
                 sendBroadcast(new CrashedBroadcast());
+          //      saveSystemState("CameraService"); // Save state before termination
                 terminate();
             }
 
@@ -63,6 +64,7 @@ public class CameraService extends MicroService {
         });
 
         this.subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast crash) -> {
+         //   saveSystemState("CameraService"); // Save state before termination
             terminate();
         });
    }

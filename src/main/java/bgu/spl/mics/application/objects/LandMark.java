@@ -25,4 +25,32 @@ public class LandMark {
     {
         return this.coordinates;
     }
+    public void updateCoordinates(List<CloudPoint> l)
+    {
+        if (l == null || l.isEmpty()) {
+            return;
+        }
+
+        if (coordinates.isEmpty()) {
+            // If the landmark has no prior coordinates, add the new ones directly
+            coordinates.addAll(l);
+            return;
+        }
+
+        // Averaging the coordinates of each point in the list
+        int size = Math.min(coordinates.size(), l.size());
+        for (int i = 0; i < size; i++) {
+            CloudPoint currentPoint = coordinates.get(i);
+            CloudPoint newPoint = l.get(i);
+
+            currentPoint.setX((currentPoint.getX() + newPoint.getX()) / 2.0);
+            currentPoint.setY((currentPoint.getY() + newPoint.getY()) / 2.0);
+        }
+
+        // If there are extra points in the new coordinates, add them
+        if (l.size() > size) {
+            coordinates.addAll(l.subList(size, l.size()));
+        }
+
+    }
 }

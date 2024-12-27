@@ -33,9 +33,24 @@ public class LiDarService extends MicroService {
      */
     @Override
     protected void initialize() {
-        // Handle DetectObjectsEvent
+        // לבדוק אם צריך לשלוח את האירוע בbroadcast או בevent
         this.subscribeEvent(DetectObjectsEvent.class, (DetectObjectsEvent event) -> {
-                LiDarWorkerTracker.setLastTrackedObjects(event.getDetectedObjects(),event.getTime());
+            try {
+                LiDarWorkerTracker.setLastTrackedObjects(event.getDetectedObjects(), event.getTime());
+             //   TrackedObjectsEvent t = new TrackedObjectsEvent(LiDarWorkerTracker.getLastTrackedObjects(), event.getTime());
+               // sendEvent(t);
+                if (LiDarWorkerTracker.detectError()) {
+                    sendBroadcast(new CrashedBroadcast());
+                    //      saveSystemState("LiDarService"); // Save state before termination
+                    terminate();
+                }
+                this.complete(event,true);
+
+            }
+            catch (Exception e)
+            {
+                this.complete(event,false);
+            }
         });
 
         this.subscribeBroadcast(TickBroadcast.class, (TickBroadcast event) -> {
@@ -45,13 +60,12 @@ public class LiDarService extends MicroService {
             }
         });
 
-        // Handle termination broadcast
         this.subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {
             terminate();
         });
 
-        // Handle crash broadcast
         this.subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast crash) -> {
+          //  saveSystemState("LidarService"); // Save state before termination
             terminate();
         });
     }

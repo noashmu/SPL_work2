@@ -33,4 +33,20 @@ public class TrackedObject {
     {
         return this.id;
     }
+    public void transformToGlobalCoordinates(Pose currentPose) {
+        for (CloudPoint point : coordinates) {
+            // Transform each CloudPoint's local coordinates to global coordinates
+            double[] globalCoords = currentPose.transformToGlobal(point.getX(), point.getY());
+            point.setX(globalCoords[0]); // Update CloudPoint's x coordinate
+            point.setY(globalCoords[1]); // Update CloudPoint's y coordinate
+        }
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public ArrayList<CloudPoint> getCoordinates() {
+        return this.coordinates;
+    }
 }

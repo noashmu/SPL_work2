@@ -6,6 +6,13 @@ import bgu.spl.mics.MicroService;
 
 import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.objects.FusionSlam;
+import bgu.spl.mics.application.objects.LandMark;
+import bgu.spl.mics.application.objects.Pose;
+import bgu.spl.mics.application.objects.TrackedObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * FusionSlamService integrates data from multiple sensors to build and update
  * the robot's global map.
@@ -33,20 +40,46 @@ public class FusionSlamService extends MicroService {
      */
     @Override
     protected void initialize() {
-        //בדיקה אם האובייקטים כבר קיימים?
+        // Handle TrackedObjectsEvent
         this.subscribeEvent(TrackedObjectsEvent.class, (TrackedObjectsEvent event) -> {
-            //   fusionSLAM.updateMap(event.getCloudPoints(), event.getObjectId());
             synchronized (fusionSlam) {
-                fusionSlam.addLandMark(event.getTrackedObjects());
+                try {
+                    List<TrackedObject> trackedObjects = event.getTrackedObjects();
+                    Pose currentPose = fusionSlam.getCurrentPose();
+
+                    // Transform cloud points to the charging station's coordinate system
+                    for (TrackedObject obj : trackedObjects) {
+                        obj.transformToGlobalCoordinates(currentPose);
+                    }
+
+                    // Add or update landmarks in the map
+                    for (TrackedObject obj : trackedObjects) {
+                        if (fusionSlam.isNewLandmark(obj)) {
+                            LandMark newLandMark = new LandMark(obj.getId(),obj.getDescription());
+                            fusionSlam.addLandMark(newLandMark);
+                            fusionSlam.updateLandMark(obj);
+                        } else {
+                            fusionSlam.updateLandMark(obj);
+                        }
+                    }
+
+                    this.complete(event, true);
+                } catch (Exception e) {
+                    this.complete(event, false);
+                }
             }
-            //   this.complete(event,);
         });
 
         this.subscribeEvent(PoseEvent.class, (PoseEvent event) -> {
             synchronized (fusionSlam) {
-                fusionSlam.addPose(event.getPose());
+                try {
+                    Pose newPose = event.getPose();
+                    fusionSlam.addPose(newPose);
+                    this.complete(event, true);
+                } catch (Exception e) {
+                    this.complete(event, false);
+                }
             }
-            //     this.complete(event, true);
 
         });
 
@@ -56,6 +89,7 @@ public class FusionSlamService extends MicroService {
             terminate();
         });
         this.subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast crash) -> {
+            //saveSystemState("FusionSlamService"); // Save state before termination
             terminate();
         });
     }

@@ -27,16 +27,26 @@ public static FusionSlam getInstance() {
     return FusionSlamHolder.INSTANCE;
 }
 
-public void addLandMark(List<TrackedObject> l)
+   public boolean isNewLandmark(TrackedObject obj)
+   {
+       for (LandMark l:landmarks)
+       {
+           if (obj.getId().equals(l.getId()))
+               return false;
+       }
+       return true;
+   }
+
+public void addLandMark(LandMark landMark)
 {
-    for (LandMark landMark:landmarks)
-    {
-        for (TrackedObject obj:l)
-        {
-            if (landMark.getId().equals(obj.getId()))
-            {
-  //              LandMark newLandMark = landMark.getCoordinates()
-            }
+  this.landmarks.add(landMark);
+}
+public void updateLandMark(TrackedObject obj)
+{
+    for (LandMark landMark : landmarks) {
+        if (landMark.getId().equals(obj.getId())) {
+            landMark.updateCoordinates(obj.getCoordinates());
+            return;
         }
     }
 }
@@ -45,4 +55,9 @@ public void addPose(Pose p)
 {
     this.poses.add(p);
 }
+    public Pose getCurrentPose() {
+        if (poses.isEmpty())
+            return null;
+        return poses.get(poses.size() - 1);
+    }
     }

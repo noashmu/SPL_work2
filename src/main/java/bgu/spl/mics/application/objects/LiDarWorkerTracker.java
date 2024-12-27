@@ -47,5 +47,14 @@ public class LiDarWorkerTracker {
             return true;
         return false;
     }
+    public boolean detectError()
+    {
+        for (TrackedObject obj : lastTrackedObjects) {
+            if ("ERROR".equals(obj.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

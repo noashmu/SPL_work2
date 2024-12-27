@@ -25,4 +25,8 @@ public class GPSIMU {
         }
         return null;
     }
+    public STATUS getStatus()
+    {
+        return this.status;
+    }
 }

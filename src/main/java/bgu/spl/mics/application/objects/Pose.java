@@ -18,4 +18,10 @@ public class Pose {
     }
 
     public int getTime(){return time;}
+    public double[] transformToGlobal(double localX, double localY) {
+        float globalX = (float) (x + localX * Math.cos(yaw) - localY * Math.sin(yaw));
+        float globalY = (float) (y + localX * Math.sin(yaw) + localY * Math.cos(yaw));
+        return new double[]{globalX, globalY};
+    }
+
 }
