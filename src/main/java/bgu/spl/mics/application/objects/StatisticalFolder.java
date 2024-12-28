@@ -77,7 +77,7 @@ public class StatisticalFolder {
             jsonContent += "\"description\": \"" + errorDescription + "\",";
             jsonContent += "\"lastFrames\": {";
 
-            if(errorSource=="Camera") {
+            if(detectedObjects!=null || !detectedObjects.isEmpty()) {
 
                 jsonContent += "\"detectedObjects\": [";
                 for (DetectedObject detect : detectedObjects) {
@@ -90,7 +90,7 @@ public class StatisticalFolder {
                 }
                 jsonContent += "],";
             }
-            else {
+            if(cloudPoints!=null || !cloudPoints.isEmpty()) { 
                 jsonContent += "\"lidarData\": [";
                 for (List<CloudPoint> points : cloudPoints) {
                     for (CloudPoint point : points) {
@@ -102,7 +102,6 @@ public class StatisticalFolder {
                 }
                 jsonContent += "],";
             }
-
 
             jsonContent += "\"robotPoses\": [";
             for (Pose pose : robotPoses) {

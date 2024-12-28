@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.CrashedBroadcast;
 import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.objects.StatisticalFolder;
 
@@ -46,7 +47,7 @@ public class TimeService extends MicroService {
                 this.sendBroadcast(new TickBroadcast(currentTick));
 
                 if (currentTick >= duration) {
-                    StatisticalFolder.getInstance().createOutputFile("output.json", false, null, null, null, null, null);
+                    //need to add calling for output file for error??
                     terminate();
                 }
             }

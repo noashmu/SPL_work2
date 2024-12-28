@@ -29,4 +29,8 @@ public class GPSIMU {
     {
         return this.status;
     }
+
+    public List<Pose> getPoseList(){
+        return this.poseList;
+    }
 }

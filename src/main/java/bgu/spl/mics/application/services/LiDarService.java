@@ -45,7 +45,8 @@ public class LiDarService extends MicroService {
                         points.addFirst(tracked.getCoordinates());
                     }
 
-                    sendBroadcast(new CrashedBroadcast("Sensor Lidar disconnected","Lidar", null, points));
+                    sendBroadcast(new CrashedBroadcast("Sensor Lidar disconnected",
+                            "Lidar", null, points,null));
                     terminate();
                 }
                 this.complete(event,true);
@@ -65,7 +66,7 @@ public class LiDarService extends MicroService {
         });
 
         this.subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {
-            StatisticalFolder.getInstance().createOutputFile("output.json", false, null, null, null, null, null);
+            //StatisticalFolder.getInstance().createOutputFile("output.json", false, null, null, null, null, null);
             terminate();
         });
 

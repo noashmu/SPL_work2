@@ -99,7 +99,7 @@ public class FusionSlamService extends MicroService {
         this.subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast crash) -> {
             StatisticalFolder.getInstance().createOutputFile("output.json", true
                     , crash.getErrorDescription(), crash.getSensorCausingError(),
-                    crash.getDetectedObjects(), crash.getCloudPoints(), fusionSlam.getPoses());
+                    crash.getDetectedObjects(), crash.getCloudPoints(), crash.getPoseList());
             terminate();
         });
     }
