@@ -22,6 +22,8 @@ public class LandMark {
         return this.id;
     }
 
+    public String getDescription(){ return this.description; }
+
     public List<CloudPoint> getCoordinates()
     {
         return this.coordinates;
