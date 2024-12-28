@@ -59,14 +59,25 @@ public class StatisticalFolder {
         jsonContent += "\"numDetectedObjects\": " + numOfDetectedObjects + ",";
         jsonContent += "\"numTrackedObjects\": " + numTrackedObjects + ",";
         jsonContent += "\"numLandmarks\": " + numLandmarks + ",";
+        jsonContent += "\"LandMarks\": { \n";
+        for(LandMark l:FusionSlam.getInstance().getLandmarks()){
+            jsonContent += ""+l.getId() +"\"{id\":" + l.getId() + "\"description\":" + l.getDescription() + "\"coordinates\":[";
+            for (CloudPoint point : l.getCoordinates()){
+                jsonContent += "\"{x\":" +point.getX() + ",\"y\":" +point.getY() + "},";
+            }
+            if (!l.getCoordinates().isEmpty()) {
+                jsonContent = jsonContent.substring(0, jsonContent.length() - 1);
+            }
+            jsonContent += "]\n";
+        }
 
         if (isError) {
             jsonContent += "\"error\": {";
             jsonContent += "\"source\": \"" + errorSource + "\",";
+            jsonContent += "\"description\": \"" + errorDescription + "\",";
+            jsonContent += "\"lastFrames\": {";
 
-            if(errorSource=="Camera") {
-                jsonContent += "\"description\": \"" + errorDescription + "\",";
-                jsonContent += "\"lastFrames\": {";
+            if(detectedObjects!=null || !detectedObjects.isEmpty()) {
 
                 jsonContent += "\"detectedObjects\": [";
                 for (DetectedObject detect : detectedObjects) {
@@ -75,12 +86,11 @@ public class StatisticalFolder {
                     jsonContent += "},";
                 }
                 if (!detectedObjects.isEmpty()) {
-                    jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // להסיר פסיק אחרון
+                    jsonContent = jsonContent.substring(0, jsonContent.length() - 1);
                 }
                 jsonContent += "],";
             }
-            else if(errorSource=="Lidar") {
-                jsonContent += "\"lastFrames\": {";
+            if(cloudPoints!=null || !cloudPoints.isEmpty()) { 
                 jsonContent += "\"lidarData\": [";
                 for (List<CloudPoint> points : cloudPoints) {
                     for (CloudPoint point : points) {

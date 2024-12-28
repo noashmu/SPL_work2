@@ -56,18 +56,16 @@ public class CameraService extends MicroService {
             }
 
             if (camera.detectError(currentTick)) {
-                sendBroadcast(new CrashedBroadcast());
+                sendBroadcast(new CrashedBroadcast(camera.errorDescription(currentTick),"Camera"
+                ,camera.getDetectedObject(currentTick), null, null));
 
-                StatisticalFolder.getInstance().createOutputFile("output.json", true,
-                        camera.errorDescription(currentTick),"Camera", camera.getDetectedObject(currentTick),
-                        null, FusionSlam.getInstance().getPoses());
-                
-                terminate();
+                terminate(); //??????????
             }
 
         });
 
         this.subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {
+            //StatisticalFolder.getInstance().createOutputFile(",output.json", false, null, null, null, null, null);
             terminate();
         });
 

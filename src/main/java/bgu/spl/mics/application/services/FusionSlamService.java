@@ -93,11 +93,13 @@ public class FusionSlamService extends MicroService {
             }
         });
         this.subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {
+            StatisticalFolder.getInstance().createOutputFile("output.json", false, null, null, null, null, null);
             terminate();
-            //statistics.toJSON(); //when the run terminate it will create json file named output
         });
         this.subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast crash) -> {
-            //saveSystemState("FusionSlamService"); // Save state before termination
+            StatisticalFolder.getInstance().createOutputFile("output.json", true
+                    , crash.getErrorDescription(), crash.getSensorCausingError(),
+                    crash.getDetectedObjects(), crash.getCloudPoints(), crash.getPoseList());
             terminate();
         });
     }

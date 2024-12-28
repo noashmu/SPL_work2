@@ -63,5 +63,7 @@ public void updateLandMark(TrackedObject obj)
     }
     public List<Pose> getPoses() { return this.poses; }
 
+    public ArrayList<LandMark> getLandmarks() { return this.landmarks; }
+
 }
 

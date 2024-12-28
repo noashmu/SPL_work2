@@ -1,7 +1,9 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.CrashedBroadcast;
 import bgu.spl.mics.application.messages.TickBroadcast;
+import bgu.spl.mics.application.objects.StatisticalFolder;
 
 import java.util.concurrent.TimeUnit;
 
@@ -45,7 +47,8 @@ public class TimeService extends MicroService {
                 this.sendBroadcast(new TickBroadcast(currentTick));
 
                 if (currentTick >= duration) {
-                    terminate(); //לבדוק אם צריך
+                    //need to add calling for output file for error??
+                    terminate();
                 }
             }
         });
