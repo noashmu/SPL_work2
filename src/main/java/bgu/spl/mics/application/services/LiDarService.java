@@ -42,7 +42,7 @@ public class LiDarService extends MicroService {
                 if (LiDarWorkerTracker.detectError()) {
                     List<List<CloudPoint>> points = new ArrayList<>();
                     for (TrackedObject tracked: LiDarWorkerTracker.getLastTrackedObjects()){
-                        points.addFirst(tracked.getCoordinates());
+                        points.add(tracked.getCoordinates());
                     }
 
                     sendBroadcast(new CrashedBroadcast("Sensor Lidar disconnected",
