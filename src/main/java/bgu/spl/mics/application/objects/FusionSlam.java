@@ -56,6 +56,7 @@ public void updateLandMark(TrackedObject obj)
 {
     this.poses.add(p);
 }
+
     public Pose getCurrentPose() {
         if (poses.isEmpty())
             return null;
