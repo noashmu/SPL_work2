@@ -64,8 +64,8 @@ public class GurionRockRunner {
                             cameraConfig.get("id").getAsInt(),
                             cameraConfig.get("frequency").getAsInt(),
                             STATUS.UP,
-                            cameraConfig.get("camera_key").getAsString(),
-                            camerasObject.get("camera_datas_path").getAsString() // Accessing the shared path
+                            cameraConfig.get("camera_key").getAsString(),"C:\\Users\\noaam\\Documents\\Skeleton\\example input\\camera_data.json"
+                            //camerasObject.get("camera_datas_path").getAsString() // Accessing the shared path
                     );
                     cameras.add(camera);
                 }

@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,9 +33,16 @@ public class Camera {
         Initalizer(filePath);
     }
     public void Initalizer(String filePath) {
-        try {
+       try
+        {
+            File file = new File(filePath);
+            if (!file.exists()) {
+                System.err.println("File not found at: " + filePath);
+                return;
+            }
+
             // Parse the camera data JSON file
-            JsonObject cameraDataJson = JsonParser.parseReader(new FileReader(filePath)).getAsJsonObject();
+            JsonObject cameraDataJson = JsonParser.parseReader(new FileReader(file)).getAsJsonObject();
 
             // Retrieve the data for this specific camera using the camera key
             JsonArray detectedObjectsArray = cameraDataJson.getAsJsonArray(cameraKey);
@@ -49,7 +57,6 @@ public class Camera {
                 int time = detectedObject.get("time").getAsInt();
                 JsonArray detectedObjectsJsonArray = detectedObject.getAsJsonArray("detectedObjects");
 
-
                 // Convert JsonArray to List<DetectedObject>
                 ArrayList<DetectedObject> detectedObjectsListForTime = new ArrayList<>();
                 for (JsonElement objElement : detectedObjectsJsonArray) {
@@ -62,13 +69,13 @@ public class Camera {
                 detectedObjectsList.add(new StampedDetectedObjects(time, detectedObjectsListForTime));
             }
 
-
         } catch (IOException e) {
             System.err.println("Error reading camera data file: " + e.getMessage());
         } catch (Exception e) {
             System.err.println("Error initializing camera: " + e.getMessage());
         }
     }
+
 
 
 
