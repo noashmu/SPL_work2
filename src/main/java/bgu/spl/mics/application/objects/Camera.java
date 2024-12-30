@@ -53,28 +53,30 @@ public class Camera {
 
 
             // Retrieve the data for this specific camera using the camera key
-            JsonArray detectedObjectsArray = cameraDataJson.getAsJsonArray(cameraKey);
+            JsonArray cameraArray = cameraDataJson.getAsJsonArray(cameraKey);
 
-            if (detectedObjectsArray == null) {
+            if (cameraArray == null) {
                 return;
             }
 
             // Process the detected objects
-            for (JsonElement element : detectedObjectsArray) {
-                JsonObject detectedObject = element.getAsJsonObject();
-                int time = detectedObject.get("time").getAsInt();
-                JsonArray detectedObjectsJsonArray = detectedObject.getAsJsonArray("detectedObjects");
+            for (JsonElement outerElement : cameraArray) {
+                JsonArray innerArray =outerElement.getAsJsonArray();
+                for (JsonElement innerElement: innerArray) {
+                    JsonObject detectedObject = innerElement.getAsJsonObject();
+                    int time = detectedObject.get("time").getAsInt();
+                    JsonArray detectedObjectsJsonArray = detectedObject.getAsJsonArray("detectedObjects");
+                    ArrayList<DetectedObject> detectedObjectsListForTime = new ArrayList<>();
+                    for (JsonElement objElement : detectedObjectsJsonArray) {
+                        JsonObject obj = objElement.getAsJsonObject();
+                        String id = obj.get("id").getAsString();
+                        String description = obj.get("description").getAsString();
+                        detectedObjectsListForTime.add(new DetectedObject(id, description));
 
-                // Convert JsonArray to List<DetectedObject>
-                ArrayList<DetectedObject> detectedObjectsListForTime = new ArrayList<>();
-                for (JsonElement objElement : detectedObjectsJsonArray) {
-                    JsonObject obj = objElement.getAsJsonObject();
-                    String id = obj.get("id").getAsString();
-                    String description = obj.get("description").getAsString();
-                    detectedObjectsListForTime.add(new DetectedObject(id, description));
+                    }
+                    detectedObjectsList.add(new StampedDetectedObjects(time, detectedObjectsListForTime));
+
                 }
-                // Add the converted list to the StampedDetectedObjects
-                detectedObjectsList.add(new StampedDetectedObjects(time, detectedObjectsListForTime));
             }
 
         } catch (IOException e) {

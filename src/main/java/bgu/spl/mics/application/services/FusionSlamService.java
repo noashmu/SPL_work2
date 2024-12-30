@@ -11,6 +11,7 @@ import bgu.spl.mics.application.objects.Pose;
 import bgu.spl.mics.application.objects.TrackedObject;
 import bgu.spl.mics.application.objects.StatisticalFolder;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,10 +29,13 @@ public class FusionSlamService extends MicroService {
      * @param fusionSlam The FusionSLAM object responsible for managing the global map.
      */
     private FusionSlam fusionSlam;
+    private String configPath;
 
-    public FusionSlamService(FusionSlam fusionSlam) {
+    public FusionSlamService(FusionSlam fusionSlam,String configPath) {
         super("FusionSlamService");
         this.fusionSlam = fusionSlam;
+        File baseFile = new File(configPath).getParentFile();
+        configPath=baseFile.getAbsolutePath();
     }
 
     /**
@@ -93,11 +97,11 @@ public class FusionSlamService extends MicroService {
             }
         });
         this.subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {
-            StatisticalFolder.getInstance().createOutputFile("C:\\Users\\noaam\\Documents\\Skeleton\\example input\\output.json", false, null, null, null, null, null);
+            StatisticalFolder.getInstance().createOutputFile(configPath, false, null, null, null, null, null);
             terminate();
         });
         this.subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast crash) -> {
-            StatisticalFolder.getInstance().createOutputFile("C:\\Users\\noaam\\Documents\\Skeleton\\example input\\output.json", true
+            StatisticalFolder.getInstance().createOutputFile(configPath, true
                     , crash.getErrorDescription(), crash.getSensorCausingError(),
                     crash.getDetectedObjects(), crash.getCloudPoints(), crash.getPoseList());
             terminate();
