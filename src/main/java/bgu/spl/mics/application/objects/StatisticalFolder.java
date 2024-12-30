@@ -123,7 +123,7 @@ public class StatisticalFolder {
             file.write(jsonContent);
             file.flush();
         } catch (IOException e) {
-            System.err.println("Error creating the output file: " + e.getMessage());
+            //System.err.println("Error creating the output file: " + e.getMessage());
         }
     }
 
