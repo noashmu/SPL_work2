@@ -39,18 +39,6 @@ public class GurionRockRunner {
             int tickTime = configJson.get("TickTime").getAsInt();
             int duration = configJson.get("Duration").getAsInt();
 
-//            List<Camera> cameras = new ArrayList<>();
-            //       Type cameraListType = new TypeToken<List<JsonObject>>() {}.getType();
-//            List<JsonObject> cameraConfigs = gson.fromJson(configJson.get("CamerasConfigurations"), cameraListType);
-//            for (JsonObject cameraConfig : cameraConfigs) {
-//                Camera camera = new Camera(
-//                        cameraConfig.get("id").getAsInt(),
-//                        cameraConfig.get("frequency").getAsInt(), STATUS.UP,
-//                        cameraConfig.get("camera_key").getAsString(),
-//                        cameraConfig.get("camera_datas_path").getAsString()
-//                        );
-//                cameras.add(camera);
-//            }
             Type cameraListType = new TypeToken<List<JsonObject>>() {
             }.getType();
             List<Camera> cameras = new ArrayList<>();
@@ -64,8 +52,8 @@ public class GurionRockRunner {
                             cameraConfig.get("id").getAsInt(),
                             cameraConfig.get("frequency").getAsInt(),
                             STATUS.UP,
-                            cameraConfig.get("camera_key").getAsString(),"C:\\Users\\noaam\\Documents\\Skeleton\\example input\\camera_data.json"
-                            //camerasObject.get("camera_datas_path").getAsString() // Accessing the shared path
+                            cameraConfig.get("camera_key").getAsString(),
+                            camerasObject.get("camera_datas_path").getAsString(),configPath // Accessing the shared path
                     );
                     cameras.add(camera);
                 }
@@ -74,21 +62,7 @@ public class GurionRockRunner {
             } else {
                 System.out.println("CamerasConfigurations not found in the JSON.");
             }
-//            List<LiDarWorkerTracker> lidarWorkers = new ArrayList<>();
-//
-//            JsonObject LidarObject = configJson.getAsJsonObject("LidarWorkers");
-//            if (LidarObject != null && LidarObject.has("LidarConfigurations")) {
-//                List<JsonObject> lidarConfigs = gson.fromJson(LidarObject.get("LidarConfigurations"), cameraListType);
-//                //  List<JsonObject> lidarConfigs = gson.fromJson(configJson.get("LidarWorkers"), cameraListType);
-//                for (JsonObject lidarConfig : lidarConfigs) {
-//                    LiDarWorkerTracker lidar = new LiDarWorkerTracker(
-//                            lidarConfig.get("id").getAsInt(),
-//                            lidarConfig.get("frequency").getAsInt(), STATUS.UP,
-//                            lidarConfig.get("lidars_data_path").getAsString()
-//                    );
-//                    lidarWorkers.add(lidar);
-//                }
-//            }
+
             List<LiDarWorkerTracker> lidarWorkers = new ArrayList<>();
             JsonObject lidarObject = configJson.getAsJsonObject("LidarWorkers");
 
@@ -103,7 +77,7 @@ public class GurionRockRunner {
                             lidarConfig.get("id").getAsInt(),
                             lidarConfig.get("frequency").getAsInt(),
                             STATUS.UP,
-                            lidarDataPath // Use the shared path
+                            lidarDataPath,configPath // Use the shared path
                     );
                     lidarWorkers.add(lidar);
                 }
@@ -114,7 +88,7 @@ public class GurionRockRunner {
             }
 
             String poseDataPath = configJson.get("poseJsonFile").getAsString();
-                GPSIMU gpsimu = new GPSIMU(tickTime, STATUS.UP, poseDataPath);
+                GPSIMU gpsimu = new GPSIMU(tickTime, STATUS.UP, poseDataPath,configPath);
 
                 FusionSlam fusionSlam = FusionSlam.getInstance();
 

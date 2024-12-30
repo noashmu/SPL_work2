@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,16 +20,23 @@ public class GPSIMU {
     private STATUS status;
     private List<Pose> poseList;
 
-    public GPSIMU(int currentTick, STATUS status,String filePath) {
+    public GPSIMU(int currentTick, STATUS status,String filePath,String config) {
         this.currentTick = currentTick;
         this.status = status;
         poseList = new ArrayList<Pose>();
-        Initalizer(filePath);
+        Initalizer(config,filePath);
     }
-    public void Initalizer(String filePath)
+    public static String resolvePath(String basePath, String relativePath) {
+        File baseFile = new File(basePath).getParentFile(); // Get directory of the base file
+        File resolvedFile = new File(baseFile, relativePath);
+        return resolvedFile.getAbsolutePath();
+    }
+    public void Initalizer(String config,String filePath)
     {
         try {
-            JsonArray poseDataArray = JsonParser.parseReader(new FileReader(filePath)).getAsJsonArray();
+            String resolvedPath = resolvePath(config,filePath);
+
+            JsonArray poseDataArray = JsonParser.parseReader(new FileReader(resolvedPath)).getAsJsonArray();
 
             for (JsonElement element : poseDataArray) {
                 JsonObject poseObject = element.getAsJsonObject();

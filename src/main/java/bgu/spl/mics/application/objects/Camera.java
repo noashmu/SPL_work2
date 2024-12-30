@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.io.File;
+
 import java.util.List;
 
 /**
@@ -24,25 +26,31 @@ public class Camera {
     private String cameraKey;
 
 
-    public Camera(int id, int frequency, STATUS status, String cameraKey,String filePath) {
+    public Camera(int id, int frequency, STATUS status, String cameraKey,String filePath,String configPath) {
         this.id = id;
         this.frequency = frequency;
         this.status = status;
         this.detectedObjectsList = new ArrayList<>();
         this.cameraKey=cameraKey;
-        Initalizer(filePath);
+        Initalizer(configPath,filePath);
     }
-    public void Initalizer(String filePath) {
+
+    public static String resolvePath(String basePath, String relativePath) {
+        File baseFile = new File(basePath).getParentFile(); // Get directory of the base file
+        File resolvedFile = new File(baseFile, relativePath);
+        return resolvedFile.getAbsolutePath();
+    }
+
+
+    public void Initalizer(String config,String filePath) {
        try
         {
-            File file = new File(filePath);
-            if (!file.exists()) {
-                System.err.println("File not found at: " + filePath);
-                return;
-            }
 
             // Parse the camera data JSON file
-            JsonObject cameraDataJson = JsonParser.parseReader(new FileReader(file)).getAsJsonObject();
+            String resolvedPath = resolvePath(config,filePath);
+
+            JsonObject cameraDataJson = JsonParser.parseReader(new FileReader(resolvedPath)).getAsJsonObject();
+
 
             // Retrieve the data for this specific camera using the camera key
             JsonArray detectedObjectsArray = cameraDataJson.getAsJsonArray(cameraKey);
