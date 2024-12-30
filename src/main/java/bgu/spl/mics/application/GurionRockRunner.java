@@ -100,7 +100,7 @@ public class GurionRockRunner {
                     microservices.add(new Thread(new LiDarService(lidar)));
                 }
                 microservices.add(new Thread(new PoseService(gpsimu)));
-                microservices.add(new Thread(new FusionSlamService(fusionSlam)));
+                microservices.add(new Thread(new FusionSlamService(fusionSlam,configPath)));
 
                 // Initialize TimeService
                 TimeService timeService = new TimeService(tickTime, duration);
@@ -108,7 +108,7 @@ public class GurionRockRunner {
 
                 //start all services
                 for (Thread service : microservices) {
-                    service.run();
+                    service.start();
                 }
 
                 // Wait for all services to finish
