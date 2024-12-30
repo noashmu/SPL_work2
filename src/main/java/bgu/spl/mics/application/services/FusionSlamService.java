@@ -93,11 +93,11 @@ public class FusionSlamService extends MicroService {
             }
         });
         this.subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {
-            StatisticalFolder.getInstance().createOutputFile("output.json", false, null, null, null, null, null);
+            StatisticalFolder.getInstance().createOutputFile("C:\\Users\\noaam\\Documents\\Skeleton\\example input\\output.json", false, null, null, null, null, null);
             terminate();
         });
         this.subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast crash) -> {
-            StatisticalFolder.getInstance().createOutputFile("output.json", true
+            StatisticalFolder.getInstance().createOutputFile("C:\\Users\\noaam\\Documents\\Skeleton\\example input\\output.json", true
                     , crash.getErrorDescription(), crash.getSensorCausingError(),
                     crash.getDetectedObjects(), crash.getCloudPoints(), crash.getPoseList());
             terminate();
