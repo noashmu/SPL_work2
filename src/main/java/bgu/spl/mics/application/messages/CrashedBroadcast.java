@@ -44,4 +44,5 @@ public class CrashedBroadcast implements Broadcast {
     public List<Pose> getPoseList(){
         return poseList;
     }
+
 }

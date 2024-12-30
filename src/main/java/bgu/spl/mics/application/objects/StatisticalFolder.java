@@ -54,6 +54,7 @@ public class StatisticalFolder {
     public synchronized void createOutputFile(String filePath, boolean isError, String errorDescription,
                                               String errorSource, List<DetectedObject> detectedObjects,
                                               List<List<CloudPoint>> cloudPoints, List<Pose> robotPoses) {
+        System.out.println("out");
         String jsonContent = "{";
         jsonContent += "\"systemRuntime\": " + systemRuntime + ",";
         jsonContent += "\"numDetectedObjects\": " + numOfDetectedObjects + ",";

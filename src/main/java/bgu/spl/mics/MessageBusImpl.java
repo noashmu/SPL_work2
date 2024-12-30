@@ -64,20 +64,36 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	@Override
+//	public void sendBroadcast(Broadcast b) {
+//		synchronized (subscribers) {
+//			Queue<MicroService> sub = subscribers.get(b.getClass());
+//			while (!sub.isEmpty()) {
+//
+//				MicroService subscriber = sub.remove();
+//				if (microServicesQueues.get(subscriber) == null)
+//				{
+//					microServicesQueues.put(subscriber, new LinkedBlockingQueue<>());
+//				}
+//				microServicesQueues.get(subscriber).add(b);
+//				sub.add(subscriber);
+//			}
+//		}
+//
+//	}
 	public void sendBroadcast(Broadcast b) {
-		synchronized (subscribers) {
-			Queue<MicroService> sub = subscribers.get(b.getClass());
-			while (!sub.isEmpty())
-			{
-				MicroService subscriber=sub.remove();
-				microServicesQueues.get(subscriber).add(b);
-				sub.add(subscriber);
+		Queue<MicroService> sub = subscribers.get(b.getClass());
+		if (sub != null) { // Check if there are subscribers
+			for (MicroService subscriber : sub) {
+				BlockingQueue<Message> queue = microServicesQueues.get(subscriber);
+				if (queue != null) {
+					queue.add(b); // Add the broadcast to the subscriber's queue
+				}
 			}
 		}
-
 	}
 
-	
+
+
 	@Override
 	public <T> Future<T> sendEvent(Event<T> e) {
 		synchronized (subscribers)
@@ -119,9 +135,10 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public Message awaitMessage(MicroService m) throws InterruptedException {
 		BlockingQueue<Message> queue = microServicesQueues.get(m);
-		if (queue == null) {
+		if (!microServicesQueues.containsKey(m)) {
 			throw new IllegalStateException("MicroService is not registered");
 		}
+
 		return queue.take(); //לבדוק
 
 	}

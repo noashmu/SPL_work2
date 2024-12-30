@@ -41,6 +41,7 @@ public class CameraService extends MicroService {
      */
     @Override
     protected void initialize() {
+
         this.subscribeBroadcast(TickBroadcast.class, (TickBroadcast tick) -> {
             int currentTick = tick.getTick();
 
@@ -61,11 +62,11 @@ public class CameraService extends MicroService {
 
                 terminate(); //??????????
             }
-
         });
 
         this.subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {
             //StatisticalFolder.getInstance().createOutputFile(",output.json", false, null, null, null, null, null);
+            sendBroadcast(new TerminatedBroadcast());
             terminate();
         });
 
