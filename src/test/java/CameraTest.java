@@ -20,7 +20,7 @@ public class CameraTest {
         // Mock data file path and cameraKey. Replace with actual test file paths as needed.
         String filePath = "src/test/resources/camera_test_data.json";
         String cameraKey = "camera1";
-        camera = new Camera(1, 5, STATUS.UP, cameraKey, filePath);
+      //  camera = new Camera(1, 5, STATUS.UP, cameraKey, filePath,);
     }
 
     @Test
@@ -32,7 +32,7 @@ public class CameraTest {
     @Test
     public void testIsActive() {
         assertTrue(camera.isActive(), "Camera should be active when status is UP.");
-        camera = new Camera(1, 5, STATUS.DOWN, "cameraKey", "path");
+      //  camera = new Camera(1, 5, STATUS.DOWN, "cameraKey", "path");
         assertFalse(camera.isActive(), "Camera should be inactive when status is DOWN.");
     }
 

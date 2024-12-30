@@ -6,9 +6,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.io.File;
+
 import java.util.List;
 
 /**
@@ -23,18 +26,31 @@ public class Camera {
     private String cameraKey;
 
 
-    public Camera(int id, int frequency, STATUS status, String cameraKey,String filePath) {
+    public Camera(int id, int frequency, STATUS status, String cameraKey,String filePath,String configPath) {
         this.id = id;
         this.frequency = frequency;
         this.status = status;
         this.detectedObjectsList = new ArrayList<>();
         this.cameraKey=cameraKey;
-        Initalizer(filePath);
+        Initalizer(configPath,filePath);
     }
-    public void Initalizer(String filePath) {
-        try {
+
+    public static String resolvePath(String basePath, String relativePath) {
+        File baseFile = new File(basePath).getParentFile(); // Get directory of the base file
+        File resolvedFile = new File(baseFile, relativePath);
+        return resolvedFile.getAbsolutePath();
+    }
+
+
+    public void Initalizer(String config,String filePath) {
+       try
+        {
+
             // Parse the camera data JSON file
-            JsonObject cameraDataJson = JsonParser.parseReader(new FileReader(filePath)).getAsJsonObject();
+            String resolvedPath = resolvePath(config,filePath);
+
+            JsonObject cameraDataJson = JsonParser.parseReader(new FileReader(resolvedPath)).getAsJsonObject();
+
 
             // Retrieve the data for this specific camera using the camera key
             JsonArray detectedObjectsArray = cameraDataJson.getAsJsonArray(cameraKey);
@@ -49,7 +65,6 @@ public class Camera {
                 int time = detectedObject.get("time").getAsInt();
                 JsonArray detectedObjectsJsonArray = detectedObject.getAsJsonArray("detectedObjects");
 
-
                 // Convert JsonArray to List<DetectedObject>
                 ArrayList<DetectedObject> detectedObjectsListForTime = new ArrayList<>();
                 for (JsonElement objElement : detectedObjectsJsonArray) {
@@ -62,13 +77,13 @@ public class Camera {
                 detectedObjectsList.add(new StampedDetectedObjects(time, detectedObjectsListForTime));
             }
 
-
         } catch (IOException e) {
             System.err.println("Error reading camera data file: " + e.getMessage());
         } catch (Exception e) {
             System.err.println("Error initializing camera: " + e.getMessage());
         }
     }
+
 
 
 

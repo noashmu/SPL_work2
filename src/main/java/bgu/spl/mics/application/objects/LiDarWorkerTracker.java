@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.awt.*;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,20 +25,28 @@ public class LiDarWorkerTracker {
     private List<TrackedObject> lastTrackedObjects;
     private String filePath;
 
-    public LiDarWorkerTracker(int id, int frequency, STATUS status, String filePath) {
+    public LiDarWorkerTracker(int id, int frequency, STATUS status, String filePath, String config) {
         this.id = id;
         this.frequency = frequency;
         this.status = status;
         lastTrackedObjects = new ArrayList<TrackedObject>();
         this.filePath=filePath;
-        Initalizer(filePath);
+        Initalizer(config,filePath);
 
 
     }
-    public void Initalizer(String filePath)
+
+    public static String resolvePath(String basePath, String relativePath) {
+        File baseFile = new File(basePath).getParentFile(); // Get directory of the base file
+        File resolvedFile = new File(baseFile, relativePath);
+        return resolvedFile.getAbsolutePath();
+    }
+    public void Initalizer(String config,String filePath)
     {
         try {
-            JsonArray lidarDataArray = JsonParser.parseReader(new FileReader(filePath)).getAsJsonArray();
+            String resolvedPath = resolvePath(config,filePath);
+
+            JsonArray lidarDataArray = JsonParser.parseReader(new FileReader(resolvedPath)).getAsJsonArray();
 
             for (JsonElement element : lidarDataArray) {
                 JsonObject lidarObject = element.getAsJsonObject();
