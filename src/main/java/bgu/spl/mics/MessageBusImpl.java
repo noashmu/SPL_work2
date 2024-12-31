@@ -38,6 +38,7 @@ public class MessageBusImpl implements MessageBus {
 				subscribers.put(type, new LinkedList<>());
 
 			subscribers.get(type).add(m);
+			microServicesQueues.putIfAbsent(m, new LinkedBlockingQueue<>());
 		}
 	}
 
@@ -50,6 +51,7 @@ public class MessageBusImpl implements MessageBus {
 				subscribers.put(type, new LinkedList<>());
 
 			subscribers.get(type).add(m);
+			microServicesQueues.putIfAbsent(m, new LinkedBlockingQueue<>());
 		}
 	}
 
@@ -80,18 +82,17 @@ public class MessageBusImpl implements MessageBus {
 //		}
 //
 //	}
+
 	public void sendBroadcast(Broadcast b) {
 		Queue<MicroService> sub = subscribers.get(b.getClass());
 		if (sub != null) { // Check if there are subscribers
 			for (MicroService subscriber : sub) {
 				BlockingQueue<Message> queue = microServicesQueues.get(subscriber);
-				if (queue != null) {
+				if (queue != null)
 					queue.add(b); // Add the broadcast to the subscriber's queue
-				}
 			}
 		}
 	}
-
 
 
 	@Override
@@ -113,20 +114,27 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void register(MicroService m) {
-		if (microServicesQueues.get(m)==null)
-		{
-			microServicesQueues.put(m,new LinkedBlockingQueue<>());
-		}
+//		if (microServicesQueues.get(m)==null)
+//		{
+//			microServicesQueues.put(m,new LinkedBlockingQueue<>());
+//		}
+		microServicesQueues.putIfAbsent(m, new LinkedBlockingQueue<>());
 	}
 
 	@Override
 	public void unregister(MicroService m) {
-		synchronized (subscribers)
-		{
-			microServicesQueues.remove(m);
-			for (Queue<MicroService> q: subscribers.values())
-			{
-				q.remove(m);
+//		synchronized (subscribers)
+//		{
+//			microServicesQueues.remove(m);
+//			for (Queue<MicroService> q: subscribers.values())
+//			{
+//				q.remove(m);
+//			}
+//		}
+		microServicesQueues.remove(m);
+		for (Queue<MicroService> queue : subscribers.values()) {
+			synchronized (queue) {
+				queue.remove(m);
 			}
 		}
 
@@ -135,9 +143,15 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public Message awaitMessage(MicroService m) throws InterruptedException {
 		BlockingQueue<Message> queue = microServicesQueues.get(m);
-		if (!microServicesQueues.containsKey(m)) {
+		if (queue == null) {
 			throw new IllegalStateException("MicroService is not registered");
 		}
+
+
+//		BlockingQueue<Message> queue = microServicesQueues.get(m);
+//		if (!microServicesQueues.containsKey(m)) {
+//			throw new IllegalStateException("MicroService is not registered");
+//		}
 
 		return queue.take(); //לבדוק
 

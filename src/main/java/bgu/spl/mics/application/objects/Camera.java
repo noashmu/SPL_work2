@@ -75,7 +75,6 @@ public class Camera {
 
                     }
                     detectedObjectsList.add(new StampedDetectedObjects(time, detectedObjectsListForTime));
-
                 }
             }
 

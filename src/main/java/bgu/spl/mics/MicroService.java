@@ -155,8 +155,8 @@ public abstract class MicroService implements Runnable {
      */
     @Override
     public final void run() {
-        initialize();
         MessageBusImpl.getInstance().register(this);
+        initialize();
 
         while (!terminated) {
             try {
@@ -164,7 +164,8 @@ public abstract class MicroService implements Runnable {
                 Callback<Message> call = (Callback<Message>) callbackMap.get(m.getClass());
 //                if (call!=null)
 //                {
-                    call.call(m);
+
+                call.call(m);
               //  }
             }
             catch (InterruptedException e)
