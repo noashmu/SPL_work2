@@ -36,7 +36,11 @@ public class MessageBusImpl implements MessageBus {
 		{
 			if (subscribers.get(type)==null)
 				subscribers.put(type, new LinkedList<>());
+			if(microServicesQueues.get(m) ==null)
+				microServicesQueues.put(m, new LinkedBlockingQueue<>());
 
+
+			
 			subscribers.get(type).add(m);
 		}
 	}
