@@ -108,7 +108,7 @@ public class GurionRockRunner {
 
                 //start all services
                 for (Thread service : microservices) {
-                    service.run();
+                    service.start();
                 }
 
 

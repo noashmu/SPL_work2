@@ -35,7 +35,7 @@ public class FusionSlamService extends MicroService {
         super("FusionSlamService");
         this.fusionSlam = fusionSlam;
         File baseFile = new File(configPath).getParentFile();
-        configPath=baseFile.getAbsolutePath();
+        this.configPath=baseFile.getAbsolutePath();
     }
 
     /**

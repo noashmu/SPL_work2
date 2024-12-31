@@ -91,7 +91,7 @@ public class StatisticalFolder {
                 }
                 jsonContent += "],";
             }
-            if(cloudPoints!=null || !cloudPoints.isEmpty()) { 
+            if(cloudPoints!=null) {
                 jsonContent += "\"lidarData\": [";
                 for (List<CloudPoint> points : cloudPoints) {
                     for (CloudPoint point : points) {
@@ -105,13 +105,15 @@ public class StatisticalFolder {
             }
 
             jsonContent += "\"robotPoses\": [";
-            for (Pose pose : robotPoses) {
-                jsonContent += pose + ",";
+            if(robotPoses!=null) {
+                for (Pose pose : robotPoses) {
+                    jsonContent += pose + ",";
+                }
+                if (!robotPoses.isEmpty()) {
+                    jsonContent = jsonContent.substring(0, jsonContent.length() - 1);
+                }
+                jsonContent += "]}}";
             }
-            if (!robotPoses.isEmpty()) {
-                jsonContent = jsonContent.substring(0, jsonContent.length() - 1);
-            }
-            jsonContent += "]}}";
         }
 
         if (jsonContent.endsWith(",")) {
@@ -123,7 +125,7 @@ public class StatisticalFolder {
             file.write(jsonContent);
             file.flush();
         } catch (IOException e) {
-            //System.err.println("Error creating the output file: " + e.getMessage());
+            System.err.println("Error creating the output file: " + e.getMessage());
         }
     }
 
