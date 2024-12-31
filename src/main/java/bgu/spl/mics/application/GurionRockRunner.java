@@ -58,7 +58,7 @@ public class GurionRockRunner {
                     cameras.add(camera);
                 }
 
-                System.out.println("Cameras parsed: " + cameras);
+              //  System.out.println("Cameras parsed: " + cameras);
             } else {
                 System.out.println("CamerasConfigurations not found in the JSON.");
             }
@@ -82,7 +82,7 @@ public class GurionRockRunner {
                     lidarWorkers.add(lidar);
                 }
 
-                System.out.println("LidarWorkers parsed: " + lidarWorkers);
+               // System.out.println("LidarWorkers parsed: " + lidarWorkers);
             } else {
                 System.out.println("LidarConfigurations not found in the JSON.");
             }
@@ -108,14 +108,15 @@ public class GurionRockRunner {
 
                 //start all services
                 for (Thread service : microservices) {
-                    service.start();
+                    service.run();
                 }
 
-                // Wait for all services to finish
+
+            // Wait for all services to finish
                 for (Thread service : microservices) {
                     service.join();
                 }
-                StatisticalFolder s = StatisticalFolder.getInstance();
+            //    StatisticalFolder s = StatisticalFolder.getInstance();
 
                 //String outputPath = configPath.replace("config.json", "output_file.json");
                 //try (FileWriter writer = new FileWriter(outputPath)) {
