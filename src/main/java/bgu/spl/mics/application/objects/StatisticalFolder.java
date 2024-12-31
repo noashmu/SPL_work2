@@ -35,8 +35,8 @@ public class StatisticalFolder {
 
     public int getNumLandmarks() { return numLandmarks; }
 
-    public synchronized void incrementRuntime() {
-        this.systemRuntime++;
+    public synchronized void incrementRuntime(int tick) {
+        this.systemRuntime=this.systemRuntime+tick;
     }
 
     public synchronized void addDetectedObjects(int count) {
@@ -54,7 +54,6 @@ public class StatisticalFolder {
     public synchronized void createOutputFile(String filePath, boolean isError, String errorDescription,
                                               String errorSource, List<DetectedObject> detectedObjects,
                                               List<List<CloudPoint>> cloudPoints, List<Pose> robotPoses) {
-        System.out.println("out");
         String jsonContent = "{";
         jsonContent += "\"systemRuntime\": " + systemRuntime + ",";
         jsonContent += "\"numDetectedObjects\": " + numOfDetectedObjects + ",";
@@ -62,9 +61,9 @@ public class StatisticalFolder {
         jsonContent += "\"numLandmarks\": " + numLandmarks + ",";
         jsonContent += "\"LandMarks\": { \n";
         for(LandMark l:FusionSlam.getInstance().getLandmarks()){
-            jsonContent += ""+l.getId() +"\"{id\":" + l.getId() + "\"description\":" + l.getDescription() + "\"coordinates\":[";
+            jsonContent += "\""+l.getId()+"\"" +":{"+"\"id\":" +"\""+ l.getId()+"\""+","  + "\"description\":" +"\""+ l.getDescription() +"\""+","+ "\"coordinates\":[";
             for (CloudPoint point : l.getCoordinates()){
-                jsonContent += "\"{x\":" +point.getX() + ",\"y\":" +point.getY() + "},";
+                jsonContent += "{"+"\"x\":" +point.getX() + ",\"y\":" +point.getY() + "},";
             }
             if (!l.getCoordinates().isEmpty()) {
                 jsonContent = jsonContent.substring(0, jsonContent.length() - 1);
@@ -83,7 +82,7 @@ public class StatisticalFolder {
                 jsonContent += "\"detectedObjects\": [";
                 for (DetectedObject detect : detectedObjects) {
                     jsonContent += "{";
-                    jsonContent += "\"id:\": " + detect.getId() + "\"description:\": " + detect.getDescription() + ",";
+                    jsonContent += "\"id:\": " + "\""+detect.getId() + "\""+"\"description:\": " +"\""+ detect.getDescription() + "\""+ ",";
                     jsonContent += "},";
                 }
                 if (!detectedObjects.isEmpty()) {
@@ -120,7 +119,7 @@ public class StatisticalFolder {
             jsonContent = jsonContent.substring(0, jsonContent.length() - 1);
         }
         jsonContent += "}";
-
+        filePath=filePath+"/output.json";
         try (FileWriter file = new FileWriter(filePath)) {
             file.write(jsonContent);
             file.flush();

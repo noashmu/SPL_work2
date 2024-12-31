@@ -36,7 +36,6 @@ public class TimeService extends MicroService {
     @Override
     protected void initialize() {
         // Start broadcasting TickBroadcast messages at regular intervals
-        System.out.println("lo");
         Thread timeThread = new Thread(() -> {
             while (currentTick < duration) {
                 // Wait for the duration of one tick

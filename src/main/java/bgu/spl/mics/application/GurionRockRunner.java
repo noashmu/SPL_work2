@@ -64,7 +64,7 @@ public class GurionRockRunner {
             }
 
             List<LiDarWorkerTracker> lidarWorkers = new ArrayList<>();
-            JsonObject lidarObject = configJson.getAsJsonObject("LidarWorkers");
+            JsonObject lidarObject = configJson.getAsJsonObject("LiDarWorkers");
 
             if (lidarObject != null && lidarObject.has("LidarConfigurations")) {
                 Type lidarListType = new TypeToken<List<JsonObject>>() {}.getType();

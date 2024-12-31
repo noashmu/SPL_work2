@@ -61,7 +61,7 @@ public class LiDarWorkerTracker {
                     double y = point.get(1).getAsDouble();
                     cloudPoints.add(new CloudPoint(x,y));
                 }
-                DetectedObject d=new DetectedObject(id,"");
+                DetectedObject d=LiDarDataBase.getInstance().getObjectFromID(id);
                 lastTrackedObjects.add(new TrackedObject(d,cloudPoints,time));
             }
         } catch (IOException e) {
@@ -82,7 +82,7 @@ public class LiDarWorkerTracker {
 
     public void setLastTrackedObjects(List<DetectedObject> detectedObjectList, int time){
         this.lastTrackedObjects = new ArrayList<>();
-        ArrayList<ArrayList<CloudPoint>> cloudPoints = LiDarDataBase.getInstance(filePath).getCloudPoints(detectedObjectList);
+        ArrayList<ArrayList<CloudPoint>> cloudPoints = LiDarDataBase.getInstance().getCloudPoints(detectedObjectList);
         int i=0;
 
         for(DetectedObject detectedObject : detectedObjectList){
@@ -92,8 +92,10 @@ public class LiDarWorkerTracker {
     }
 
     public boolean shouldSendEvent(int currTick) {
-        if (currTick >= this.frequency && currTick % this.frequency == 0)
-            return true;
+        if (this.frequency!=0) {
+            if (currTick >= this.frequency && currTick % this.frequency == 0)
+                return true;
+        }
         return false;
     }
     public boolean detectError()

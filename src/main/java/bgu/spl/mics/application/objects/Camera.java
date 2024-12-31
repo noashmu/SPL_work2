@@ -60,9 +60,9 @@ public class Camera {
             }
 
             // Process the detected objects
-            for (JsonElement outerElement : cameraArray) {
-                JsonArray innerArray =outerElement.getAsJsonArray();
-                for (JsonElement innerElement: innerArray) {
+          //  for (JsonElement outerElement : cameraArray) {
+               // JsonArray innerArray =outerElement.getAsJsonArray();
+                for (JsonElement innerElement: cameraArray) {
                     JsonObject detectedObject = innerElement.getAsJsonObject();
                     int time = detectedObject.get("time").getAsInt();
                     JsonArray detectedObjectsJsonArray = detectedObject.getAsJsonArray("detectedObjects");
@@ -71,12 +71,14 @@ public class Camera {
                         JsonObject obj = objElement.getAsJsonObject();
                         String id = obj.get("id").getAsString();
                         String description = obj.get("description").getAsString();
-                        detectedObjectsListForTime.add(new DetectedObject(id, description));
+                        DetectedObject d=new DetectedObject(id, description);
+                        detectedObjectsListForTime.add(d);
+                        LiDarDataBase.getInstance().getDetectedObjectsList().add(d);
 
                     }
                     detectedObjectsList.add(new StampedDetectedObjects(time, detectedObjectsListForTime));
                 }
-            }
+        //    }
 
         } catch (IOException e) {
             System.err.println("Error reading camera data file: " + e.getMessage());
@@ -95,9 +97,12 @@ public class Camera {
     }
 
     public boolean shouldSendEvent(int currTick) {
-        if (currTick >= this.frequency && currTick % this.frequency == 0)
-            return true;
+        if (this.frequency!=0) {
+            if (currTick >= this.frequency && currTick % this.frequency == 0)
+                return true;
+        }
         return false;
+
     }
 
 

@@ -93,7 +93,7 @@ public class FusionSlamService extends MicroService {
 
         this.subscribeBroadcast(TickBroadcast.class, (TickBroadcast tick) -> {
             synchronized (fusionSlam) {
-                StatisticalFolder.getInstance().incrementRuntime();
+                StatisticalFolder.getInstance().incrementRuntime(tick.getTick());
             }
         });
         this.subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {

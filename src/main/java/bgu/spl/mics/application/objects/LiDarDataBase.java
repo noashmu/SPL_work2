@@ -13,9 +13,11 @@ public class LiDarDataBase {
     }
 
     private List<StampedCloudPoints> cloudPoints;
+    private List<DetectedObject> detectedObjectsDB;
 
     private LiDarDataBase() {
         cloudPoints = new ArrayList<>();
+        detectedObjectsDB=new ArrayList<>();
     }
 
     /**
@@ -24,8 +26,8 @@ public class LiDarDataBase {
      * @param filePath The path to the LiDAR data file.
      * @return The singleton instance of LiDarDataBase.
      */
-    public static LiDarDataBase getInstance(String filePath) {
-        LidarDataBaseHolder.instance.loadDataFromFile(filePath); //not sure its good
+    public static LiDarDataBase getInstance() {
+     //   LidarDataBaseHolder.instance.loadDataFromFile(filePath); //not sure its good
         return LidarDataBaseHolder.instance;
     }
 
@@ -45,6 +47,20 @@ public class LiDarDataBase {
         }
 
         return cloudPointArrayList;
+    }
+    public List<DetectedObject> getDetectedObjectsList()
+    {
+        return this.detectedObjectsDB;
+    }
+    public DetectedObject getObjectFromID(String id)
+    {
+        for (DetectedObject d:detectedObjectsDB)
+        {
+            if (d.getId().equals(id))
+                return d;
+
+        }
+        return null;
     }
 
     private void loadDataFromFile(String filePath) {
