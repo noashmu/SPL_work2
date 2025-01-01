@@ -45,16 +45,21 @@ public class TimeService extends MicroService {
                     Thread.currentThread().interrupt();
                 }
                 currentTick++;
-
-
                 this.sendBroadcast(new TickBroadcast(currentTick));
+
                 if (currentTick >= duration) {
-                    sendBroadcast(new TerminatedBroadcast());
+                    this.sendBroadcast(new TerminatedBroadcast());
                     terminate();
                 }
             }
         });
         timeThread.start();
+
+        this.subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {
+            sendBroadcast(new TerminatedBroadcast());
+            terminate();
+        });
     }
+
 
 }

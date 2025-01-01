@@ -1,5 +1,8 @@
 package bgu.spl.mics;
 
+import bgu.spl.mics.application.messages.CrashedBroadcast;
+import bgu.spl.mics.application.messages.TerminatedBroadcast;
+
 import java.util.Map;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public abstract class MicroService implements Runnable {
 
-    private boolean terminated = false;
+    private volatile boolean terminated = false;
     private final String name;
     private final Map<Class<? extends Message>, Callback<?>> callbackMap = new ConcurrentHashMap<>();
 
@@ -162,11 +165,7 @@ public abstract class MicroService implements Runnable {
             try {
                 Message m = MessageBusImpl.getInstance().awaitMessage(this);
                 Callback<Message> call = (Callback<Message>) callbackMap.get(m.getClass());
-//                if (call!=null)
-//                {
-
                 call.call(m);
-              //  }
             }
             catch (InterruptedException e)
             {

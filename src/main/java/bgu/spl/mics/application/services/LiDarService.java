@@ -66,7 +66,6 @@ public class LiDarService extends MicroService {
         });
 
         this.subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {
-            //StatisticalFolder.getInstance().createOutputFile("output.json", false, null, null, null, null, null);
             sendBroadcast(new TerminatedBroadcast());
             terminate();
         });

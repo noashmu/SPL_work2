@@ -131,6 +131,7 @@ public class MessageBusImpl implements MessageBus {
 //				q.remove(m);
 //			}
 //		}
+
 		microServicesQueues.remove(m);
 		for (Queue<MicroService> queue : subscribers.values()) {
 			synchronized (queue) {
@@ -147,19 +148,11 @@ public class MessageBusImpl implements MessageBus {
 			throw new IllegalStateException("MicroService is not registered");
 		}
 
-
-//		BlockingQueue<Message> queue = microServicesQueues.get(m);
-//		if (!microServicesQueues.containsKey(m)) {
-//			throw new IllegalStateException("MicroService is not registered");
-//		}
-
-		return queue.take(); //לבדוק
-
+		return queue.take();
 	}
 
 	public static MessageBusImpl getInstance() {
 		return MessageBusImplHolder.instance;
 	}
-
 
 }
