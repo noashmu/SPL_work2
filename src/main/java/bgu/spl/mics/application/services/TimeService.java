@@ -38,13 +38,14 @@ public class TimeService extends MicroService {
         // Start broadcasting TickBroadcast messages at regular intervals
         Thread timeThread = new Thread(() -> {
             while (currentTick < duration) {
+                StatisticalFolder.getInstance().incrementRuntime(TickTime);
                 // Wait for the duration of one tick
                 try {
                     Thread.sleep(TickTime);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
-                currentTick++;
+                currentTick=currentTick+TickTime;
                 this.sendBroadcast(new TickBroadcast(currentTick));
 
                 if (currentTick >= duration) {

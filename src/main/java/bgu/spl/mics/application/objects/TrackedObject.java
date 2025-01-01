@@ -49,4 +49,8 @@ public class TrackedObject {
     public ArrayList<CloudPoint> getCoordinates() {
         return this.coordinates;
     }
+
+    public int getTime(){
+        return this.time;
+    }
 }

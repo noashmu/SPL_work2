@@ -52,6 +52,7 @@ public class CameraService extends MicroService {
                     if (detectObjectsEvent != null) {
                         StatisticalFolder.getInstance().addDetectedObjects(detectObjectsEvent.getDetectedObjects().size());
                         sendEvent(detectObjectsEvent);
+                        StatisticalFolder.getInstance().addTrackedObjects(detectObjectsEvent.getDetectedObjects().size());
                     }
                 }
             }

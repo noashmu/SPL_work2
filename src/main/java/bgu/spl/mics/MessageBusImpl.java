@@ -65,7 +65,7 @@ public class MessageBusImpl implements MessageBus {
 		}
 	}
 
-	@Override
+	//@Override
 //	public void sendBroadcast(Broadcast b) {
 //		synchronized (subscribers) {
 //			Queue<MicroService> sub = subscribers.get(b.getClass());
@@ -83,16 +83,36 @@ public class MessageBusImpl implements MessageBus {
 //
 //	}
 
+//	public void sendBroadcast(Broadcast b) {
+//		Queue<MicroService> sub = subscribers.get(b.getClass());
+//		if (sub != null) { // Check if there are subscribers
+//			for (MicroService subscriber : sub) {
+//				BlockingQueue<Message> queue = microServicesQueues.get(subscriber);
+//				if (queue != null)
+//					queue.add(b); // Add the broadcast to the subscriber's queue
+//			}
+//		}
+//	}
+
+	@Override
 	public void sendBroadcast(Broadcast b) {
-		Queue<MicroService> sub = subscribers.get(b.getClass());
-		if (sub != null) { // Check if there are subscribers
-			for (MicroService subscriber : sub) {
+		Queue<MicroService> subscribersList = subscribers.get(b.getClass());
+		if (subscribersList != null) { // Check if there are subscribers
+			List<MicroService> safeCopy;
+			synchronized (subscribersList) {
+				// Create a safe copy of the subscribers list to prevent ConcurrentModificationException
+				safeCopy = new ArrayList<>(subscribersList);
+			}
+			// Iterate over the copy to avoid modification issues
+			for (MicroService subscriber : safeCopy) {
 				BlockingQueue<Message> queue = microServicesQueues.get(subscriber);
-				if (queue != null)
+				if (queue != null) {
 					queue.add(b); // Add the broadcast to the subscriber's queue
+				}
 			}
 		}
 	}
+
 
 
 	@Override

@@ -1,2 +1,2 @@
-{"systemRuntime": 36,"numDetectedObjects": 30,"numTrackedObjects": 0,"numLandmarks": 0,"LandMarks": { 
+{"systemRuntime": 10,"numDetectedObjects": 21,"numTrackedObjects": 21,"numLandmarks": 0,"LandMarks": { 
 "error": {"source": "Camera","description": "GLaDOS has repurposed the robot to conduct endless cake-fetching tests. Success is a lie.","lastFrames": {"detectedObjects": [{"id:": "Chair_Base_2""description:": "A Blue Chair with wooden legs",},{"id:": "ERROR""description:": "GLaDOS has repurposed the robot to conduct endless cake-fetching tests. Success is a lie.",},{"id:": "furniture_3""description:": "Bed",}],"robotPoses": [}

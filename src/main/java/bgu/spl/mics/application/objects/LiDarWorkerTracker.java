@@ -92,8 +92,8 @@ public class LiDarWorkerTracker {
     }
 
     public boolean shouldSendEvent(int currTick) {
-        if (this.frequency!=0) {
-            if (currTick >= this.frequency && currTick % this.frequency == 0)
+        if(!lastTrackedObjects.isEmpty()) {
+            if (lastTrackedObjects.get(0).getTime() + frequency == currTick)
                 return true;
         }
         return false;

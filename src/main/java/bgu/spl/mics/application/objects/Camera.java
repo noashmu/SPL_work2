@@ -97,8 +97,8 @@ public class Camera {
     }
 
     public boolean shouldSendEvent(int currTick) {
-        if (this.frequency!=0) {
-            if (currTick >= this.frequency && currTick % this.frequency == 0)
+        if(!detectedObjectsList.isEmpty()){
+            if(detectedObjectsList.get(0).getTime()+frequency==currTick)
                 return true;
         }
         return false;

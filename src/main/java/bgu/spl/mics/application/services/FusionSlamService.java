@@ -50,7 +50,6 @@ public class FusionSlamService extends MicroService {
             synchronized (fusionSlam) {
                 try {
                     List<TrackedObject> trackedObjects = event.getTrackedObjects();
-                    StatisticalFolder.getInstance().addTrackedObjects(trackedObjects.size());
                     Pose currentPose = fusionSlam.getCurrentPose();
 
                     // Transform cloud points to the charging station's coordinate system
@@ -92,9 +91,6 @@ public class FusionSlamService extends MicroService {
         });
 
         this.subscribeBroadcast(TickBroadcast.class, (TickBroadcast tick) -> {
-            synchronized (fusionSlam) {
-                StatisticalFolder.getInstance().incrementRuntime(tick.getTick());
-            }
         });
         this.subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {
             StatisticalFolder.getInstance().createOutputFile(configPath, false, null, null, null, null, null);
