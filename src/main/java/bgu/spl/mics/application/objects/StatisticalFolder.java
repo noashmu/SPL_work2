@@ -119,13 +119,19 @@ public class StatisticalFolder {
             jsonContent = jsonContent.substring(0, jsonContent.length() - 1);
         }
         jsonContent += "}";
-        filePath=filePath+"/output.json";
-        try (FileWriter file = new FileWriter(filePath)) {
-            file.write(jsonContent);
-            file.flush();
-        } catch (IOException e) {
-            System.err.println("Error creating the output file: " + e.getMessage());
-        }
-    }
+        final String filePath2 = filePath + "/output.json";
+        final String js2=jsonContent;
+        Thread writerThread = new Thread(() -> {
+      //      filePath = filePath + "/output.json";
+            try (FileWriter file = new FileWriter(filePath2)) {
+                file.write(js2);
+                file.flush();
+            } catch (IOException e) {
+                System.err.println("Error creating the output file: " + e.getMessage());
+            }
 
+
+    });
+        writerThread.start();
+}
 }

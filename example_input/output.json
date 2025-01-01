@@ -1,9 +1,9 @@
-{"systemRuntime": 30,"numDetectedObjects": 1,"numTrackedObjects": 1,"numLandmarks": 7,"LandMarks": { 
-"Wall_1":{"id":"Wall_1","description":"Wall","coordinates":[{"x":2.109982490539551,"y":7.85420560836792},{"x":1.9165443181991577,"y":7.769678115844727}]
-"Wall_3":{"id":"Wall_3","description":"Wall","coordinates":[{"x":3.2450531721115112,"y":2.965422034263611},{"x":3.3715341091156006,"y":3.135986566543579}]
-"Chair_Base_1":{"id":"Chair_Base_1","description":"Chair Base","coordinates":[{"x":1.972141683101654,"y":2.785130500793457},{"x":1.8585542440414429,"y":3.1402437686920166}]
-"Wall_4":{"id":"Wall_4","description":"Wall","coordinates":[{"x":-3.0143823623657227,"y":2.1652687788009644},{"x":0.9188409745693207,"y":0.3623866140842438}]
-"Circular_Base_1":{"id":"Circular_Base_1","description":"Circular Base","coordinates":[{"x":0.7625217735767365,"y":3.1945078372955322},{"x":0.4630827456712723,"y":3.164104461669922}]
-"Door":{"id":"Door","description":"Door","coordinates":[{"x":0.2388012409210205,"y":2.257157325744629},{"x":0.450565904378891,"y":1.96534264087677}]
-"Wall_5":{"id":"Wall_5","description":"Wall","coordinates":[{"x":-3.2554649114608765,"y":4.687957763671875},{"x":-3.3515268564224243,"y":4.672219753265381}]
+{"systemRuntime": 30,"numDetectedObjects": 13,"numTrackedObjects": 13,"numLandmarks": 7,"LandMarks": { 
+"Wall_1":{"id":"Wall_1","description":"Wall","coordinates":[{"x":0.30880000069737434,"y":3.798449993133545},{"x":0.156810000538826,"y":3.6519500017166138}]
+"Wall_3":{"id":"Wall_3","description":"Wall","coordinates":[{"x":3.0725499391555786,"y":-0.39085499942302704},{"x":3.131850004196167,"y":-0.18696000427007675}]
+"Chair_Base_1":{"id":"Chair_Base_1","description":"Chair Base","coordinates":[{"x":1.9416999816894531,"y":-1.002399981021881},{"x":1.7117500305175781,"y":-0.7089200019836426}]
+"Wall_4":{"id":"Wall_4","description":"Wall","coordinates":[{"x":-2.5183500051498413,"y":-3.317049980163574},{"x":1.7962999939918518,"y":-3.640199899673462}]
+"Circular_Base_1":{"id":"Circular_Base_1","description":"Circular Base","coordinates":[{"x":0.6652100086212158,"y":-1.0390499830245972},{"x":0.39501500129699707,"y":-1.1716500520706177}]
+"Door":{"id":"Door","description":"Door","coordinates":[{"x":0.5,"y":-2.0999999046325684},{"x":0.800000011920929,"y":-2.299999952316284}]
+"Wall_5":{"id":"Wall_5","description":"Wall","coordinates":[{"x":-3.6213499307632446,"y":-1.0354999899864197},{"x":-3.7059500217437744,"y":-1.08364999294281}]
 }

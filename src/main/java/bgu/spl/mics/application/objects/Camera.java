@@ -97,9 +97,11 @@ public class Camera {
     }
 
     public boolean shouldSendEvent(int currTick) {
-        if(!detectedObjectsList.isEmpty()){
-            if(detectedObjectsList.get(0).getTime()+frequency==currTick)
-                return true;
+        if(!detectedObjectsList.isEmpty()) {
+            for (StampedDetectedObjects d : detectedObjectsList) {
+                if (d.getTime() + frequency == currTick)
+                    return true;
+            }
         }
         return false;
 
