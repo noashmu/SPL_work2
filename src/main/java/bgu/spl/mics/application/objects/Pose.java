@@ -19,6 +19,7 @@ public class Pose {
 
     public int getTime(){return time;}
     public double[] transformToGlobal(double localX, double localY) {
+        double yawRadians= this.yaw * (Math.PI/180);
         double globalX = (float) (x + localX * Math.cos(yaw) - localY * Math.sin(yaw));
         double globalY = (float) (y + localX * Math.sin(yaw) + localY * Math.cos(yaw));
         return new double[]{globalX, globalY};
