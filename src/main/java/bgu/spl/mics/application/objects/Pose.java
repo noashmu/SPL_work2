@@ -24,5 +24,17 @@ public class Pose {
         double globalY = (float) (y + localX * Math.sin(yaw) + localY * Math.cos(yaw));
         return new double[]{globalX, globalY};
     }
+    public double getX()
+    {
+        return this.x;
+    }
+    public double getY()
+    {
+        return this.y;
+    }
+    public double getYaw()
+    {
+        return this.yaw;
+    }
 
 }

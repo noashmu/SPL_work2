@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.io.File;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -117,6 +118,17 @@ public class Camera {
         return new ArrayList<>();
 
     }
+    public List<DetectedObject> getLastDetectedObject(int currTick) {
+        List<DetectedObject> l=new ArrayList<>();
+        for (StampedDetectedObjects stampedObject : detectedObjectsList) {
+            if (stampedObject.getTime() < currTick) {
+                l.addAll(stampedObject.getDetectedObjects());
+            }
+        }
+        return l;
+
+    }
+
 
     public DetectObjectsEvent createDetectObjectsEvent(int currTick) {
 

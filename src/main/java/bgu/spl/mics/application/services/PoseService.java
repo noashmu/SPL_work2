@@ -5,10 +5,7 @@ import bgu.spl.mics.application.messages.CrashedBroadcast;
 import bgu.spl.mics.application.messages.PoseEvent;
 import bgu.spl.mics.application.messages.TerminatedBroadcast;
 import bgu.spl.mics.application.messages.TickBroadcast;
-import bgu.spl.mics.application.objects.GPSIMU;
-import bgu.spl.mics.application.objects.Pose;
-import bgu.spl.mics.application.objects.STATUS;
-import bgu.spl.mics.application.objects.StatisticalFolder;
+import bgu.spl.mics.application.objects.*;
 
 /**
  * PoseService is responsible for maintaining the robot's current pose (position and orientation)
@@ -36,7 +33,7 @@ public class PoseService extends MicroService {
         this.subscribeBroadcast(TickBroadcast.class, (TickBroadcast tick) -> {
             if (gpsimu.getStatus().equals(STATUS.ERROR)) {
                 sendBroadcast(new CrashedBroadcast("Sensor GPSIMU disconnected","GPSIMU"
-                        ,null, null, gpsimu.getPoseList()));
+                        , LiDarDataBase.getInstance().getDetectedObjectsList(), LiDarDataBase.getInstance().getCloudPoints(LiDarDataBase.getInstance().getDetectedObjectsList()), gpsimu.getPoseList()));
                 terminate();
             }
             Pose currentPose = gpsimu.getPose(tick.getTick());

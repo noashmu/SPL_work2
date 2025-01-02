@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.objects;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -53,7 +54,7 @@ public class StatisticalFolder {
 
     public synchronized void createOutputFile(String filePath, boolean isError, String errorDescription,
                                               String errorSource, List<DetectedObject> detectedObjects,
-                                              List<List<CloudPoint>> cloudPoints, List<Pose> robotPoses) {
+                                              ArrayList<ArrayList<CloudPoint>> cloudPoints, List<Pose> robotPoses) {
         String jsonContent = "{";
         jsonContent += "\"systemRuntime\": " + systemRuntime + ",";
         jsonContent += "\"numDetectedObjects\": " + numOfDetectedObjects + ",";
@@ -134,4 +135,106 @@ public class StatisticalFolder {
     });
         writerThread.start();
 }
-}
+
+        public synchronized void createOutputFileError(String filePath, boolean isError, String errorDescription, String errorSource,
+                                                   List<DetectedObject> detectedObjects,
+                                                  ArrayList<ArrayList<CloudPoint>> cloudPoints, List<Pose> robotPoses) {
+            // Start creating the JSON content
+            String jsonContent = "{";
+
+            // Add error information if applicable
+            if (isError) {
+                jsonContent += "\"error\": \"" + errorDescription + "\",";
+                jsonContent += "\"faultySensor\": \"" + errorSource + "\",";
+                jsonContent += "\"lastCamerasFrame\": {";
+                if (detectedObjects != null && !detectedObjects.isEmpty()) {
+                    for (DetectedObject detectedObject : detectedObjects) {
+                        jsonContent += "\"" + errorSource + "\": {";
+                        jsonContent += "\"time\": " + this.systemRuntime + ",";
+                        jsonContent += "\"detectedObjects\": [";
+                        jsonContent += "{\"id\": \"" + detectedObject.getId() + "\",";
+                        jsonContent += "\"description\": \"" + detectedObject.getDescription() + "\"}";
+                        jsonContent += "]},";
+                    }
+                    jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // Remove trailing comma
+                }
+                jsonContent += "\n";
+                jsonContent += "},";
+                jsonContent += "\"lastLiDarWorkerTrackersFrame\": {";
+                if (cloudPoints != null && !cloudPoints.isEmpty()) {
+                    for (int i = 0; i < cloudPoints.size(); i++) {
+                        jsonContent += "\"LiDarWorkerTracker" + (i + 1) + "\": [";
+                        for (DetectedObject detectedObject : detectedObjects) {
+                            jsonContent += "{\"id\": \"" + detectedObject.getId() + "\",";
+                            jsonContent += "\"time\": " + this.systemRuntime + ",";
+                            jsonContent += "\"description\": \"" + detectedObject.getDescription() + "\"}";
+                            jsonContent += "]},";
+                        }
+                        for (CloudPoint point : cloudPoints.get(i)) {
+
+                            jsonContent += "\"coordinates\": [";
+                            jsonContent += "{\"x\": " + point.getX() + ",\"y\": " + point.getY() + "},";
+                            jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // Remove trailing comma
+                            jsonContent += "]},";
+                        }
+                        jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // Remove trailing comma
+                        jsonContent += "],";
+                    }
+                    jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // Remove trailing comma
+                }
+                jsonContent += "},";
+            }
+            jsonContent += "\n";
+            // Add robot poses
+            jsonContent += "\"poses\": [";
+            if (robotPoses != null && !robotPoses.isEmpty()) {
+                for (Pose pose : robotPoses) {
+                    jsonContent += "{\"time\": " + pose.getTime() + ",";
+                    jsonContent += "\"x\": " + pose+ ",";
+                    jsonContent += "\"y\": " + pose.getY() + ",";
+                    jsonContent += "\"yaw\": " + pose.getYaw() + "},";
+                }
+                jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // Remove trailing comma
+            }
+            jsonContent += "],";
+            jsonContent += "\n";
+
+            // Add statistics
+            jsonContent += "\"statistics\": {";
+            jsonContent += "\"systemRuntime\": " + this.systemRuntime + ",";
+            jsonContent += "\"numDetectedObjects\": " + this.numOfDetectedObjects+ ",";
+            jsonContent += "\"numTrackedObjects\": " +this.numTrackedObjects + ",";
+            jsonContent += "\"numLandmarks\": " + this.numLandmarks + ",";
+            jsonContent += "\"landMarks\": {";
+            for (LandMark landMark : FusionSlam.getInstance().getLandmarks()) {
+                jsonContent += "\"" + landMark.getId() + "\": {";
+                jsonContent += "\"id\": \"" + landMark.getId() + "\",";
+                jsonContent += "\"description\": \"" + landMark.getDescription() + "\",";
+                jsonContent += "\"coordinates\": [";
+                for (CloudPoint point : landMark.getCoordinates()) {
+                    jsonContent += "{\"x\": " + point.getX() + ",\"y\": " + point.getY() + "},";
+                }
+                if (!landMark.getCoordinates().isEmpty()) {
+                    jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // Remove trailing comma
+                }
+                jsonContent += "]},";
+            }
+            if (!FusionSlam.getInstance().getLandmarks().isEmpty()) {
+                jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // Remove trailing comma
+            }
+            jsonContent += "}}";
+
+            // Close JSON
+            jsonContent += "}";
+
+            // Write JSON to file
+            final String outputFilePath = filePath + "/output.json";
+
+            try (FileWriter file = new FileWriter(outputFilePath)) {
+                file.write(jsonContent);
+                file.flush();
+            } catch (IOException e) {
+                System.err.println("Error creating the output file: " + e.getMessage());
+            }
+        }
+    }
