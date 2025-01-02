@@ -39,6 +39,7 @@ public class LiDarService extends MicroService {
         this.subscribeEvent(DetectObjectsEvent.class, (DetectObjectsEvent event) -> {
             try {
                 LiDarWorkerTracker.setLastTrackedObjects(event.getDetectedObjects(), event.getTime());
+
                 if (LiDarWorkerTracker.detectError()) {
                     ArrayList<ArrayList<CloudPoint>> points = new ArrayList<>();
                     for (TrackedObject tracked: LiDarWorkerTracker.getLastTrackedObjects()){

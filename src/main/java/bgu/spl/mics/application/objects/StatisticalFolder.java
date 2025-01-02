@@ -161,7 +161,7 @@ public class StatisticalFolder {
                 jsonContent += "\n";
                 jsonContent += "},";
                 jsonContent += "\"lastLiDarWorkerTrackersFrame\": {";
-                if (cloudPoints != null && !cloudPoints.isEmpty()) {
+                if (!cloudPoints.isEmpty()) {
                     for (int i = 0; i < cloudPoints.size(); i++) {
                         jsonContent += "\"LiDarWorkerTracker" + (i + 1) + "\": [";
                         for (DetectedObject detectedObject : detectedObjects) {
