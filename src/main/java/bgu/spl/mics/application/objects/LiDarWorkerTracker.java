@@ -63,7 +63,7 @@ public class LiDarWorkerTracker {
                     cloudPoints.add(new CloudPoint(x,y));
 
                 }
-          
+
                 DetectedObject d=LiDarDataBase.getInstance().getObjectFromID(id);
                 lastTrackedObjects.add(new TrackedObject(d,cloudPoints,time));
             }
