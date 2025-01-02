@@ -161,16 +161,19 @@ public class StatisticalFolder {
                 jsonContent += "\n";
                 jsonContent += "},";
                 jsonContent += "\"lastLiDarWorkerTrackersFrame\": {";
+
+                jsonContent += "\"LiDarWorkerTracker" + "\": [";
+                for (DetectedObject detectedObject : detectedObjects) {
+                    jsonContent += "{\"id\": \"" + detectedObject.getId() + "\",";
+                    jsonContent += "\"time\": " + this.systemRuntime + ",";
+                    jsonContent += "\"description\": \"" + detectedObject.getDescription() + "\"}";
+                    jsonContent += "]},";
+                }
                 if (!cloudPoints.isEmpty()) {
-                    for (int i = 0; i < cloudPoints.size(); i++) {
-                        jsonContent += "\"LiDarWorkerTracker" + (i + 1) + "\": [";
-                        for (DetectedObject detectedObject : detectedObjects) {
-                            jsonContent += "{\"id\": \"" + detectedObject.getId() + "\",";
-                            jsonContent += "\"time\": " + this.systemRuntime + ",";
-                            jsonContent += "\"description\": \"" + detectedObject.getDescription() + "\"}";
-                            jsonContent += "]},";
-                        }
-                        for (CloudPoint point : cloudPoints.get(i)) {
+               //     for (int i = 0; i < cloudPoints.size(); i++) {
+                    for (ArrayList<CloudPoint> pointArr: cloudPoints)
+                    {
+                        for (CloudPoint point : pointArr) {
 
                             jsonContent += "\"coordinates\": [";
                             jsonContent += "{\"x\": " + point.getX() + ",\"y\": " + point.getY() + "},";

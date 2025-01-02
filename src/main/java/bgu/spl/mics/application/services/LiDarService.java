@@ -38,18 +38,21 @@ public class LiDarService extends MicroService {
         // לבדוק אם צריך לשלוח את האירוע בbroadcast או בevent
         this.subscribeEvent(DetectObjectsEvent.class, (DetectObjectsEvent event) -> {
             try {
-                LiDarWorkerTracker.setLastTrackedObjects(event.getDetectedObjects(), event.getTime());
 
                 if (LiDarWorkerTracker.detectError()) {
                     ArrayList<ArrayList<CloudPoint>> points = new ArrayList<>();
                     for (TrackedObject tracked: LiDarWorkerTracker.getLastTrackedObjects()){
                         points.add(tracked.getCoordinates());
+                 //       LiDarDataBase.getInstance().addCloudPoints(new StampedCloudPoints(tracked.getId(),tracked.getTime()));
+
                     }
 
                     sendBroadcast(new CrashedBroadcast("Sensor Lidar disconnected",
                             "Lidar",event.getDetectedObjects(), points,FusionSlam.getInstance().getPoses()));
                     terminate();
                 }
+                LiDarWorkerTracker.setLastTrackedObjects(event.getDetectedObjects(), event.getTime());
+
                 this.complete(event,true);
 
             }

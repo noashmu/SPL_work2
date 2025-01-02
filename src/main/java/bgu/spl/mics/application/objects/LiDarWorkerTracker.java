@@ -55,12 +55,15 @@ public class LiDarWorkerTracker {
                 JsonArray cloudPointsArray = lidarObject.getAsJsonArray("cloudPoints");
 
                 ArrayList<CloudPoint> cloudPoints = new ArrayList<>();
+                LiDarDataBase.getInstance().addCloudPoints(new StampedCloudPoints(id,time));
                 for (JsonElement pointElement : cloudPointsArray) {
                     JsonArray point = pointElement.getAsJsonArray();
                     double x = point.get(0).getAsDouble();
                     double y = point.get(1).getAsDouble();
                     cloudPoints.add(new CloudPoint(x,y));
+
                 }
+          
                 DetectedObject d=LiDarDataBase.getInstance().getObjectFromID(id);
                 lastTrackedObjects.add(new TrackedObject(d,cloudPoints,time));
             }

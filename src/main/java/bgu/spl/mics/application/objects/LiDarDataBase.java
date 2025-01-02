@@ -70,4 +70,8 @@ public class LiDarDataBase {
     public void addCloudPoints(StampedCloudPoints stampedCloudPoints) {
         cloudPoints.add(stampedCloudPoints);
     }
+    public List<StampedCloudPoints> getStamped()
+    {
+        return this.cloudPoints;
+    }
 }
