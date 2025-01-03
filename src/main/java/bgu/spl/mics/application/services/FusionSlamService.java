@@ -1,20 +1,16 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.MicroService;
-
 
 import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.objects.*;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * FusionSlamService integrates data from multiple sensors to build and update
  * the robot's global map.
- * 
  * This service receives TrackedObjectsEvents from LiDAR workers and PoseEvents from the PoseService,
  * transforming and updating the map with new landmarks.
  */
@@ -88,18 +84,18 @@ public class FusionSlamService extends MicroService {
 
         this.subscribeBroadcast(TickBroadcast.class, (TickBroadcast tick) -> {
             if (fusionSlam.getSensorCount()<=0) {
-                StatisticalFolder.getInstance().createOutputFile(configPath, false, null, null, null, null, null);
+                StatisticalFolder.getInstance().createOutputFile(configPath, null, null, null);
                 this.sendBroadcast(new TerminatedBroadcast());
                 terminate();
 
             }
         });
         this.subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {
-            StatisticalFolder.getInstance().createOutputFile(configPath, false, null, null, null, null, null);
+            StatisticalFolder.getInstance().createOutputFile(configPath, null, null, null);
             terminate();
         });
         this.subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast crash) -> {
-            StatisticalFolder.getInstance().createOutputFileError(configPath, true
+            StatisticalFolder.getInstance().createOutputFileError(configPath
                     , crash.getErrorDescription(), crash.getSensorCausingError(),
                     crash.getDetectedObjects(), crash.getCloudPoints(), crash.getPoseList());
             terminate();
