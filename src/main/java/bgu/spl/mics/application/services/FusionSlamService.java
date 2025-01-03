@@ -42,10 +42,10 @@ public class FusionSlamService extends MicroService {
             synchronized (fusionSlam) {
                 try {
                     List<TrackedObject> trackedObjects = event.getTrackedObjects();
-                    Pose currentPose = fusionSlam.getCurrentPose();
 
                     // Transform cloud points to the charging station's coordinate system
                     for (TrackedObject obj : trackedObjects) {
+                        Pose currentPose = fusionSlam.getCurrentPose(obj.getTime());
                         obj.transformToGlobalCoordinates(currentPose);
                     }
 

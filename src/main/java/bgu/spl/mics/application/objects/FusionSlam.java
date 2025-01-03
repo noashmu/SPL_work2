@@ -59,10 +59,10 @@ public void updateLandMark(TrackedObject obj)
     this.poses.add(p);
 }
 
-    public Pose getCurrentPose() {
+    public Pose getCurrentPose(int time) {
         if (poses.isEmpty())
             return null;
-        return poses.get(poses.size() - 1);
+        return poses.get(time-1);
     }
     public List<Pose> getPoses() { return this.poses; }
 
