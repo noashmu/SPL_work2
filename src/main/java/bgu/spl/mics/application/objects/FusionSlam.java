@@ -11,6 +11,8 @@ import java.util.List;
 public class FusionSlam {
     private ArrayList<LandMark> landmarks;
     private List<Pose> poses;
+    private int sensorCount;
+
 
     private FusionSlam()
     {
@@ -65,6 +67,19 @@ public void updateLandMark(TrackedObject obj)
     public List<Pose> getPoses() { return this.poses; }
 
     public ArrayList<LandMark> getLandmarks() { return this.landmarks; }
+
+    public int getSensorCount()
+    {
+        return this.sensorCount;
+    }
+    public void decreseSensorCount()
+    {
+        this.sensorCount--;
+    }
+    public void setSensorCount(int count)
+    {
+        this.sensorCount=count;
+    }
 
 }
 

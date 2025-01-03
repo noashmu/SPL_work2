@@ -35,6 +35,16 @@ public class LiDarWorkerTracker {
 
 
     }
+    public boolean isActive()
+    {
+        if (this.status==STATUS.UP)
+            return true;
+        return false;
+    }
+    public void turnOff()
+    {
+        this.status=STATUS.DOWN;
+    }
 
     public static String resolvePath(String basePath, String relativePath) {
         File baseFile = new File(basePath).getParentFile(); // Get directory of the base file

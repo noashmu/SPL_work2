@@ -87,6 +87,11 @@ public class FusionSlamService extends MicroService {
         });
 
         this.subscribeBroadcast(TickBroadcast.class, (TickBroadcast tick) -> {
+            if (fusionSlam.getSensorCount()<=0) {
+                StatisticalFolder.getInstance().createOutputFile(configPath, false, null, null, null, null, null);
+                terminate();
+
+            }
         });
         this.subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {
             StatisticalFolder.getInstance().createOutputFile(configPath, false, null, null, null, null, null);

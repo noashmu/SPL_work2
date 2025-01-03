@@ -64,9 +64,16 @@ public class LiDarService extends MicroService {
         });
 
         this.subscribeBroadcast(TickBroadcast.class, (TickBroadcast event) -> {
-            if(LiDarWorkerTracker.shouldSendEvent(event.getTick())){
-                TrackedObjectsEvent trackedObjectsEvent = new TrackedObjectsEvent(LiDarWorkerTracker.getLastTrackedObjects(),event.getTick());
-                this.sendEvent(trackedObjectsEvent);
+            if (LiDarWorkerTracker.isActive()) {
+                if (LiDarWorkerTracker.shouldSendEvent(event.getTick())) {
+                    TrackedObjectsEvent trackedObjectsEvent = new TrackedObjectsEvent(LiDarWorkerTracker.getLastTrackedObjects(), event.getTick());
+                    this.sendEvent(trackedObjectsEvent);
+                    LiDarDataBase.getInstance().setTrackedObjectsCount(LiDarDataBase.getInstance().getTrackedObjectsCount() - trackedObjectsEvent.getTrackedObjects().size());
+                }
+                if (LiDarDataBase.getInstance().getTrackedObjectsCount() <= 0) {
+                    FusionSlam.getInstance().decreseSensorCount();
+                    LiDarWorkerTracker.turnOff();
+                }
             }
         });
 
