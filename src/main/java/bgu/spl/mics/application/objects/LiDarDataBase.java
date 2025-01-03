@@ -72,11 +72,8 @@ public class LiDarDataBase {
         return null;
     }
 
-    private void loadDataFromFile(String filePath) {
-
-    }
-
-    public void addCloudPoints(StampedCloudPoints stampedCloudPoints) {
+    public void addCloudPoints(StampedCloudPoints stampedCloudPoints, double x, double y) {
+        stampedCloudPoints.setPoints(x, y);
         cloudPoints.add(stampedCloudPoints);
     }
     public List<StampedCloudPoints> getStamped()

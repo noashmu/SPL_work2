@@ -144,53 +144,56 @@ public class StatisticalFolder {
 
             // Add error information if applicable
             if (isError) {
-                jsonContent += "\"error\": \"" + errorDescription + "\",";
-                jsonContent += "\"faultySensor\": \"" + errorSource + "\",";
-                jsonContent += "\"lastCamerasFrame\": {";
+                jsonContent += "\"error\": \"" + errorDescription + "\",\n";
+                jsonContent += "\"faultySensor\": \"" + errorSource + "\",\n";
+                jsonContent += "\"lastCamerasFrame\": {"+"\n";
                 if (detectedObjects != null && !detectedObjects.isEmpty()) {
                     for (DetectedObject detectedObject : detectedObjects) {
-                        jsonContent += "\"" + errorSource + "\": {";
+                        jsonContent += "\"" + "Camera" + "\": {";
                         jsonContent += "\"time\": " + this.systemRuntime + ",";
                         jsonContent += "\"detectedObjects\": [";
                         jsonContent += "{\"id\": \"" + detectedObject.getId() + "\",";
                         jsonContent += "\"description\": \"" + detectedObject.getDescription() + "\"}";
-                        jsonContent += "]},";
+                        jsonContent += "]}," + "\n";
                     }
                     jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // Remove trailing comma
                 }
                 jsonContent += "\n";
-                jsonContent += "},";
-                jsonContent += "\"lastLiDarWorkerTrackersFrame\": {";
+                jsonContent += "},"+"\n";
+                jsonContent += "\"lastLiDarWorkerTrackersFrame\": {"+"\n";
+
+                int index = 0;
 
                 jsonContent += "\"LiDarWorkerTracker" + "\": [";
                 for (DetectedObject detectedObject : detectedObjects) {
                     jsonContent += "{\"id\": \"" + detectedObject.getId() + "\",";
                     jsonContent += "\"time\": " + this.systemRuntime + ",";
-                    jsonContent += "\"description\": \"" + detectedObject.getDescription() + "\"}";
-                    jsonContent += "]},";
-                }
-                if (!cloudPoints.isEmpty()) {
-               //     for (int i = 0; i < cloudPoints.size(); i++) {
-                    for (ArrayList<CloudPoint> pointArr: cloudPoints)
-                    {
+                    jsonContent += "\"description\": \"" + detectedObject.getDescription() + "\",";
+                    //jsonContent += "],";
+                    if (!cloudPoints.isEmpty() && index!=cloudPoints.size()-1) {
+                        //for (ArrayList<CloudPoint> pointArr: cloudPoints)
+                        //{
+                        ArrayList<CloudPoint> pointArr = cloudPoints.get(index);
                         for (CloudPoint point : pointArr) {
 
-                            jsonContent += "\"coordinates\": [";
-                            jsonContent += "{\"x\": " + point.getX() + ",\"y\": " + point.getY() + "},";
-                            jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // Remove trailing comma
-                            jsonContent += "]},";
+                                jsonContent += "\"coordinates\": [";
+                                jsonContent += "{\"x\": " + point.getX() + ",\"y\": " + point.getY() + "},";
+                                //jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // Remove trailing comma
+                                //jsonContent += "]},";
                         }
                         jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // Remove trailing comma
-                        jsonContent += "],";
+                        jsonContent += "]},";
+                        //}
+                        jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // Remove trailing comma
                     }
-                    jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // Remove trailing comma
                 }
-                jsonContent += "},";
+                jsonContent += "]}";
+                //jsonContent += "}";
             }
             jsonContent += "\n";
             // Add robot poses
             jsonContent += "\"poses\": [";
-            if (robotPoses != null && !robotPoses.isEmpty()) {
+            if (!robotPoses.isEmpty()) {
                 for (Pose pose : robotPoses) {
                     jsonContent += "{\"time\": " + pose.getTime() + ",";
                     jsonContent += "\"x\": " + pose+ ",";

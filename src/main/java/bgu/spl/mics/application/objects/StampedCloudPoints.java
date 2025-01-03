@@ -27,4 +27,11 @@ public class StampedCloudPoints {
     public ArrayList<ArrayList<Double>> getPoints() {
         return cloudPoints;
     }
+
+    public void setPoints(double x, double y) {
+        ArrayList<Double> point = new ArrayList<>();
+        point.add(x);
+        point.add(y);
+        cloudPoints.add(point);
+    }
 }
