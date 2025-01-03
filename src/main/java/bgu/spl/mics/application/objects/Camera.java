@@ -133,8 +133,13 @@ public class Camera {
             }
         }
         return new ArrayList<>();
-
     }
+
+    public DetectedObject getVeryLastDetectedObject(int currTick) {
+        List<DetectedObject> detectedObjects = getDetectedObject(currTick);
+        return detectedObjects.get(detectedObjects.size()-1);
+    }
+
     public List<DetectedObject> getLastDetectedObject(int currTick) {
         List<DetectedObject> l=new ArrayList<>();
         for (StampedDetectedObjects stampedObject : detectedObjectsList) {

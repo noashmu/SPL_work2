@@ -63,9 +63,9 @@ public class CameraService extends MicroService {
                 }
             }
 
-                if (camera.detectError(currentTick)) {
-                    sendBroadcast(new CrashedBroadcast(camera.errorDescription(currentTick),"Camera"
-                        ,camera.getDetectedObject(currentTick),
+            if (camera.detectError(currentTick)) {
+                sendBroadcast(new CrashedBroadcast(camera.errorDescription(currentTick),"Camera"
+                        ,camera.getVeryLastDetectedObject(currentTick),
                         LiDarDataBase.getInstance().getCloudPoints(camera.getLastDetectedObject(currentTick)),
                         FusionSlam.getInstance().getPoses()));
                 terminate();
