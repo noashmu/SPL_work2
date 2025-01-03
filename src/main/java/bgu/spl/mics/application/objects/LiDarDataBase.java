@@ -35,15 +35,24 @@ public class LiDarDataBase {
         ArrayList<ArrayList<CloudPoint>> cloudPointArrayList = new ArrayList<>(); //each list represent the points of detected object
 
         for(StampedCloudPoints stampedCloudPoints : cloudPoints) {
-            for(int i=0; i<detectedObjectList.size(); i++) {
-                if(stampedCloudPoints.getId().equals(detectedObjectList.get(i).getId())) {
+            for(DetectedObject detectedObject : detectedObjectList) {
+                if(stampedCloudPoints.getId().equals(detectedObject.getId())) {
                     ArrayList<CloudPoint> cloudPointArray = new ArrayList<>();
                     for(List<Double> points: stampedCloudPoints.getPoints()){
                         cloudPointArray.add(new CloudPoint(points.get(0), points.get(1)));
                     }
-                    cloudPointArrayList.add(i, cloudPointArray);
+                    cloudPointArrayList.add(cloudPointArray);
                 }
             }
+//            for(int i=0; i<detectedObjectList.size(); i++) {
+//                if(stampedCloudPoints.getId().equals(detectedObjectList.get(i).getId())) {
+//                    ArrayList<CloudPoint> cloudPointArray = new ArrayList<>();
+//                    for(List<Double> points: stampedCloudPoints.getPoints()){
+//                        cloudPointArray.add(new CloudPoint(points.get(0), points.get(1)));
+//                    }
+//                    cloudPointArrayList.add(i, cloudPointArray);
+//                }
+//            }
         }
 
         return cloudPointArrayList;
@@ -63,11 +72,8 @@ public class LiDarDataBase {
         return null;
     }
 
-    private void loadDataFromFile(String filePath) {
-
-    }
-
-    public void addCloudPoints(StampedCloudPoints stampedCloudPoints) {
+    public void addCloudPoints(StampedCloudPoints stampedCloudPoints, double x, double y) {
+        stampedCloudPoints.setPoints(x, y);
         cloudPoints.add(stampedCloudPoints);
     }
     public List<StampedCloudPoints> getStamped()
