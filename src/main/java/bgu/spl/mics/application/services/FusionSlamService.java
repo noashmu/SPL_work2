@@ -89,11 +89,11 @@ public class FusionSlamService extends MicroService {
         this.subscribeBroadcast(TickBroadcast.class, (TickBroadcast tick) -> {
         });
         this.subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {
-            StatisticalFolder.getInstance().createOutputFile(configPath, false, null, null, null, null, null);
-          //  terminate();
+            StatisticalFolder.getInstance().createOutputFile(configPath, null, null, null, null, null);
+            terminate();
         });
         this.subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast crash) -> {
-            StatisticalFolder.getInstance().createOutputFileError(configPath, true
+            StatisticalFolder.getInstance().createOutputFileError(configPath
                     , crash.getErrorDescription(), crash.getSensorCausingError(),
                     crash.getDetectedObjects(), crash.getCloudPoints(), crash.getPoseList());
             terminate();

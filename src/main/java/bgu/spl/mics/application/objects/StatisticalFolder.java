@@ -52,14 +52,14 @@ public class StatisticalFolder {
         this.numLandmarks++;
     }
 
-    public synchronized void createOutputFile(String filePath, boolean isError, String errorDescription,
+    public synchronized void createOutputFile(String filePath, String errorDescription,
                                               String errorSource, List<DetectedObject> detectedObjects,
                                               ArrayList<ArrayList<CloudPoint>> cloudPoints, List<Pose> robotPoses) {
         String jsonContent = "{";
         jsonContent += "\"systemRuntime\": " + systemRuntime + ",";
         jsonContent += "\"numDetectedObjects\": " + numOfDetectedObjects + ",";
         jsonContent += "\"numTrackedObjects\": " + numTrackedObjects + ",";
-        jsonContent += "\"numLandmarks\": " + numLandmarks + ",";
+        jsonContent += "\"numLandmarks\": " + numLandmarks + "," + "\n";
         jsonContent += "\"LandMarks\": { \n";
         for(LandMark l:FusionSlam.getInstance().getLandmarks()){
             jsonContent += "\""+l.getId()+"\"" +":{"+"\"id\":" +"\""+ l.getId()+"\""+","  + "\"description\":" +"\""+ l.getDescription() +"\""+","+ "\"coordinates\":[";
@@ -69,57 +69,12 @@ public class StatisticalFolder {
             if (!l.getCoordinates().isEmpty()) {
                 jsonContent = jsonContent.substring(0, jsonContent.length() - 1);
             }
-            jsonContent += "]\n";
+            jsonContent += "]}," + "\n";
         }
 
-        if (isError) {
-            jsonContent += "\"error\": {";
-            jsonContent += "\"source\": \"" + errorSource + "\",";
-            jsonContent += "\"description\": \"" + errorDescription + "\",";
-            jsonContent += "\"lastFrames\": {";
+        jsonContent = jsonContent.substring(0, jsonContent.length() - 2);
 
-            if(detectedObjects!=null || !detectedObjects.isEmpty()) {
-
-                jsonContent += "\"detectedObjects\": [";
-                for (DetectedObject detect : detectedObjects) {
-                    jsonContent += "{";
-                    jsonContent += "\"id:\": " + "\""+detect.getId() + "\""+"\"description:\": " +"\""+ detect.getDescription() + "\""+ ",";
-                    jsonContent += "},";
-                }
-                if (!detectedObjects.isEmpty()) {
-                    jsonContent = jsonContent.substring(0, jsonContent.length() - 1);
-                }
-                jsonContent += "],";
-            }
-            if(cloudPoints!=null) {
-                jsonContent += "\"lidarData\": [";
-                for (List<CloudPoint> points : cloudPoints) {
-                    for (CloudPoint point : points) {
-                        jsonContent += "(" + point.getX() + "," + point.getY() + "),";
-                    }
-                }
-                if (!cloudPoints.isEmpty()) {
-                    jsonContent = jsonContent.substring(0, jsonContent.length() - 1);
-                }
-                jsonContent += "],";
-            }
-
-            jsonContent += "\"robotPoses\": [";
-            if(robotPoses!=null) {
-                for (Pose pose : robotPoses) {
-                    jsonContent += pose + ",";
-                }
-                if (!robotPoses.isEmpty()) {
-                    jsonContent = jsonContent.substring(0, jsonContent.length() - 1);
-                }
-                jsonContent += "]}}";
-            }
-        }
-
-        if (jsonContent.endsWith(",")) {
-            jsonContent = jsonContent.substring(0, jsonContent.length() - 1);
-        }
-        jsonContent += "}";
+        jsonContent += "\n"+"}}";
         final String filePath2 = filePath + "/output.json";
         final String js2=jsonContent;
         Thread writerThread = new Thread(() -> {
@@ -136,14 +91,14 @@ public class StatisticalFolder {
         writerThread.start();
 }
 
-        public synchronized void createOutputFileError(String filePath, boolean isError, String errorDescription, String errorSource,
+        public synchronized void createOutputFileError(String filePath, String errorDescription, String errorSource,
                                                    List<DetectedObject> detectedObjects,
                                                   ArrayList<ArrayList<CloudPoint>> cloudPoints, List<Pose> robotPoses) {
             // Start creating the JSON content
             String jsonContent = "{";
 
             // Add error information if applicable
-            if (isError) {
+            //if (isError) {
                 jsonContent += "\"error\": \"" + errorDescription + "\",\n";
                 jsonContent += "\"faultySensor\": \"" + errorSource + "\",\n";
                 jsonContent += "\"lastCamerasFrame\": {"+"\n";
@@ -189,14 +144,14 @@ public class StatisticalFolder {
                 }
                 jsonContent += "]}";
                 //jsonContent += "}";
-            }
+            //}
             jsonContent += "\n";
             // Add robot poses
             jsonContent += "\"poses\": [";
             if (!robotPoses.isEmpty()) {
                 for (Pose pose : robotPoses) {
                     jsonContent += "{\"time\": " + pose.getTime() + ",";
-                    jsonContent += "\"x\": " + pose+ ",";
+                    jsonContent += "\"x\": " + pose.getX()+ ",";
                     jsonContent += "\"y\": " + pose.getY() + ",";
                     jsonContent += "\"yaw\": " + pose.getYaw() + "},";
                 }
