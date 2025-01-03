@@ -14,10 +14,12 @@ public class LiDarDataBase {
 
     private List<StampedCloudPoints> cloudPoints;
     private List<DetectedObject> detectedObjectsDB;
+    private int TrackedObjectsCount;
 
     private LiDarDataBase() {
         cloudPoints = new ArrayList<>();
         detectedObjectsDB=new ArrayList<>();
+        this.TrackedObjectsCount=0;
     }
 
     /**
@@ -79,5 +81,14 @@ public class LiDarDataBase {
     public List<StampedCloudPoints> getStamped()
     {
         return this.cloudPoints;
+    }
+    public void setTrackedObjectsCount(int count)
+    {
+        this.TrackedObjectsCount=count;
+
+    }
+    public int getTrackedObjectsCount()
+    {
+        return this.TrackedObjectsCount;
     }
 }
