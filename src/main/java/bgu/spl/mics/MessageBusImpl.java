@@ -120,7 +120,7 @@ public class MessageBusImpl implements MessageBus {
 		synchronized (subscribers)
 		{
 			Queue<MicroService> sub = subscribers.get(e.getClass());
-			if (!sub.isEmpty()) {
+			if (sub!=null && !sub.isEmpty()) {
 				MicroService subscriber = sub.remove();
 				microServicesQueues.get(subscriber).add(e);
 				sub.add(subscriber);

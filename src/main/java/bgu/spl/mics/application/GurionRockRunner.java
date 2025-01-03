@@ -35,6 +35,7 @@ public class GurionRockRunner {
         String configPath = args[0];
         Gson gson = new Gson();
         try {
+            int sensorCount=0;
             JsonObject configJson = JsonParser.parseReader(new FileReader(configPath)).getAsJsonObject();
             int tickTime = configJson.get("TickTime").getAsInt();
             int duration = configJson.get("Duration").getAsInt();
@@ -56,6 +57,7 @@ public class GurionRockRunner {
                             camerasObject.get("camera_datas_path").getAsString(),configPath // Accessing the shared path
                     );
                     cameras.add(camera);
+                    sensorCount++;
                 }
 
               //  System.out.println("Cameras parsed: " + cameras);
@@ -80,6 +82,7 @@ public class GurionRockRunner {
                             lidarDataPath,configPath // Use the shared path
                     );
                     lidarWorkers.add(lidar);
+                   // sensorCount++;
                 }
 
                // System.out.println("LidarWorkers parsed: " + lidarWorkers);
@@ -89,9 +92,10 @@ public class GurionRockRunner {
 
             String poseDataPath = configJson.get("poseJsonFile").getAsString();
                 GPSIMU gpsimu = new GPSIMU(tickTime, STATUS.UP, poseDataPath,configPath);
+                sensorCount++;
 
                 FusionSlam fusionSlam = FusionSlam.getInstance();
-
+                fusionSlam.setSensorCount(sensorCount);
                 List<Thread> microservices = new ArrayList<>();
                 for (Camera camera : cameras) {
                     microservices.add(new Thread(new CameraService(camera)));

@@ -48,11 +48,17 @@ public class CameraService extends MicroService {
             if (camera.isActive()) {
                 if (camera.shouldSendEvent(currentTick)) {
                     DetectObjectsEvent detectObjectsEvent = camera.createDetectObjectsEvent(currentTick);
+                    camera.setCountDetected(camera.getCountDetected()-detectObjectsEvent.getDetectedObjects().size());
 
                     if (detectObjectsEvent != null) {
                         StatisticalFolder.getInstance().addDetectedObjects(detectObjectsEvent.getDetectedObjects().size());
                         sendEvent(detectObjectsEvent);
                         StatisticalFolder.getInstance().addTrackedObjects(detectObjectsEvent.getDetectedObjects().size());
+                    }
+                    if (camera.getCountDetected()<=0)
+                    {
+                        camera.TurnOffCamera();
+                        FusionSlam.getInstance().decreseSensorCount();
                     }
                 }
             }

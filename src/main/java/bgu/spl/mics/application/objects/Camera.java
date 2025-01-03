@@ -25,6 +25,7 @@ public class Camera {
     private STATUS status;
     private List<StampedDetectedObjects> detectedObjectsList;
     private String cameraKey;
+    private int countDetected;
 
 
     public Camera(int id, int frequency, STATUS status, String cameraKey,String filePath,String configPath) {
@@ -33,6 +34,7 @@ public class Camera {
         this.status = status;
         this.detectedObjectsList = new ArrayList<>();
         this.cameraKey=cameraKey;
+        this.countDetected=0;
         Initalizer(configPath,filePath);
     }
 
@@ -75,17 +77,28 @@ public class Camera {
                         DetectedObject d=new DetectedObject(id, description);
                         detectedObjectsListForTime.add(d);
                         LiDarDataBase.getInstance().getDetectedObjectsList().add(d);
+                        this.countDetected++;
 
                     }
                     detectedObjectsList.add(new StampedDetectedObjects(time, detectedObjectsListForTime));
                 }
-        //    }
+            LiDarDataBase.getInstance().setTrackedObjectsCount(countDetected);
+
+            //    }
 
         } catch (IOException e) {
             System.err.println("Error reading camera data file: " + e.getMessage());
         } catch (Exception e) {
             System.err.println("Error initializing camera: " + e.getMessage());
         }
+    }
+    public void setCountDetected(int count)
+    {
+        this.countDetected=count;
+    }
+    public int getCountDetected()
+    {
+        return this.countDetected;
     }
 
 
@@ -95,6 +108,10 @@ public class Camera {
         if (status.equals(STATUS.UP))
             return true;
         return false;
+    }
+    public void TurnOffCamera()
+    {
+        this.status=STATUS.DOWN;
     }
 
     public boolean shouldSendEvent(int currTick) {
@@ -160,5 +177,9 @@ public class Camera {
             }
         }
         return null;
+    }
+    public List<StampedDetectedObjects> getDetectedObjectsList()
+    {
+        return this.detectedObjectsList;
     }
 }
