@@ -44,8 +44,9 @@ public class GPSIMU {
                 double x = poseObject.get("x").getAsDouble();
                 double y = poseObject.get("y").getAsDouble();
                 double yaw = poseObject.get("yaw").getAsDouble();
-
-                poseList.add(new Pose(x, y, yaw,time));
+                Pose p=new Pose(x, y, yaw,time);
+                poseList.add(p);
+                FusionSlam.getInstance().addPose(p);
             }
         } catch (IOException e) {
             System.err.println("Error reading pose data file: " + e.getMessage());
