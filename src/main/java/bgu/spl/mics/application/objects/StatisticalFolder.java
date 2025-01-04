@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Holds statistical information about the system's operation.
@@ -30,8 +31,8 @@ public class StatisticalFolder {
         this.numTrackedObjects = 0;
         this.numLandmarks = 0;
         this.tickTime = 0;
-        this.lastFramesCameras = new HashMap<Integer,StampedDetectedObjects>();
-        this.lastFramesLidars = new HashMap<Integer,TrackedObject>();
+        this.lastFramesCameras = new ConcurrentHashMap<Integer,StampedDetectedObjects>();
+        this.lastFramesLidars = new ConcurrentHashMap<Integer,TrackedObject>();
     }
 
     public static StatisticalFolder getInstance() {return StatisticalFolderHolder.instance;}
@@ -46,11 +47,11 @@ public class StatisticalFolder {
 
     public int getNumLandmarks() { return numLandmarks; }
 
-    public synchronized void updateLastFramesLidars(int id, TrackedObject trackedObject) {
+    public void updateLastFramesLidars(int id, TrackedObject trackedObject) {
         this.lastFramesLidars.put(id, trackedObject);
     }
 
-    public synchronized void updateLastFramesCameras(int id, StampedDetectedObjects detectedObject) {
+    public void updateLastFramesCameras(int id, StampedDetectedObjects detectedObject) {
         this.lastFramesCameras.put(id, detectedObject);
     }
 
@@ -98,13 +99,17 @@ public class StatisticalFolder {
 
             jsonContent += "\n"+"}}";
             final String filePath2 = filePath + "/output.json";
-            //final String js2=jsonContent;
-            try (FileWriter file = new FileWriter(filePath2)) {
-                file.write(jsonContent);
-                file.flush();
-            } catch (IOException e) {
-                System.err.println("Error creating the output file: " + e.getMessage());
-            }
+            final String js2=jsonContent;
+            Thread writerThread = new Thread(() -> {
+                //      filePath = filePath + "/output.json";
+                try (FileWriter file = new FileWriter(filePath2)) {
+                    file.write(js2);
+                    file.flush();
+                } catch (IOException e) {
+                    System.err.println("Error creating the output file: " + e.getMessage());
+                }
+            });
+            writerThread.start();
         }
 
     }
@@ -148,7 +153,7 @@ public class StatisticalFolder {
             jsonContent += "  \"lastLiDarWorkerTrackersFrame\": {"+"\n";
 
             int index= 0;
-            if(lastFramesLidars!=null && !lastFramesLidars.isEmpty()){
+            if(!lastFramesLidars.isEmpty()){
                 for(Map.Entry<Integer, TrackedObject> entry : lastFramesLidars.entrySet()){
                     jsonContent += "    \"LiDarWorkerTracker" + entry.getKey() +"\": [";
                     jsonContent += "{\"id\": \"" + entry.getValue().getId() + "\",";
@@ -163,7 +168,7 @@ public class StatisticalFolder {
 
                         }
                         jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // Remove trailing comma
-                        jsonContent += "]},";
+                        jsonContent += "]}],\n";
                         index++;
                     }
                 }
@@ -186,8 +191,8 @@ public class StatisticalFolder {
 //                    jsonContent += "]},";
 //                }
 //            }
-            jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // Remove trailing comma
-            jsonContent += "]";
+            jsonContent = jsonContent.substring(0, jsonContent.length() - 2); // Remove trailing comma
+            //jsonContent += "]";
             jsonContent += "\n  },\n";
             // Add robot poses
             jsonContent += "  \"poses\": [";
@@ -232,13 +237,25 @@ public class StatisticalFolder {
             jsonContent += "}";
 
             // Write JSON to file
-            final String outputFilePath = filePath + "/output.json";
-
-            try (FileWriter file = new FileWriter(outputFilePath)) {
-                file.write(jsonContent);
-                file.flush();
-            } catch (IOException e) {
-                System.err.println("Error creating the output file: " + e.getMessage());
-            }
+            final String filePath2 = filePath + "/output.json";
+            final String js2=jsonContent;
+            Thread writerThread = new Thread(() -> {
+                //      filePath = filePath + "/output.json";
+                try (FileWriter file = new FileWriter(filePath2)) {
+                    file.write(js2);
+                    file.flush();
+                } catch (IOException e) {
+                    System.err.println("Error creating the output file: " + e.getMessage());
+                }
+            });
+            writerThread.start();
+//            final String outputFilePath = filePath + "/output.json";
+//
+//            try (FileWriter file = new FileWriter(outputFilePath)) {
+//                file.write(jsonContent);
+//                file.flush();
+//            } catch (IOException e) {
+//                System.err.println("Error creating the output file: " + e.getMessage());
+//            }
         }
     }
