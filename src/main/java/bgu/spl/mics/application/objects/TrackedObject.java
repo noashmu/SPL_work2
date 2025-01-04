@@ -13,7 +13,6 @@ public class TrackedObject {
     private String id;
     private int time;
     private String description;
-    //maybe change
     private ArrayList<CloudPoint> coordinates;
 
     public TrackedObject(String id, int time, String description) {

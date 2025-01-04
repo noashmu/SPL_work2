@@ -46,9 +46,11 @@ public class LiDarService extends MicroService {
                     }
 
                     StampedDetectedObjects s= new StampedDetectedObjects(event.getTime(),event.getDetectedObjects());
+                    List<TrackedObject> trackedObjectList = LiDarWorkerTracker.getLastTrackedObjects();
+                    StatisticalFolder.getInstance().updateLastFramesLidars(LiDarWorkerTracker.getId(), trackedObjectList.get(trackedObjectList.size()-1));
                     sendBroadcast(new CrashedBroadcast("Sensor Lidar disconnected",
-                            "Lidar"+LiDarWorkerTracker.getId(),s,
-                            points,FusionSlam.getInstance().getPoses()));
+                            "Lidar"+LiDarWorkerTracker.getId(),
+                            points,FusionSlam.getInstance().getPoses(),event.getTime()));
                     StatisticalFolder.getInstance().subRuntime();
                     terminate();
                 }
@@ -72,6 +74,8 @@ public class LiDarService extends MicroService {
                 }
                 if (LiDarDataBase.getInstance().getTrackedObjectsCount() <= 0) {
                     FusionSlam.getInstance().decreseSensorCount();
+                    List<TrackedObject> trackedObjectList = LiDarWorkerTracker.getLastTrackedObjects();
+                    StatisticalFolder.getInstance().updateLastFramesLidars(LiDarWorkerTracker.getId(), trackedObjectList.get(trackedObjectList.size()-1));
                     LiDarWorkerTracker.turnOff();
                 }
             }
@@ -83,6 +87,9 @@ public class LiDarService extends MicroService {
         });
 
         this.subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast crash) -> {
+            List<TrackedObject> trackedObjectList = LiDarWorkerTracker.getLastTrackedObjects();
+            if(!trackedObjectList.isEmpty())
+                StatisticalFolder.getInstance().updateLastFramesLidars(LiDarWorkerTracker.getId(), trackedObjectList.get(trackedObjectList.size()-1));
             terminate();
         });
     }

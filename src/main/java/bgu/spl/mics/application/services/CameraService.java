@@ -58,10 +58,10 @@ public class CameraService extends MicroService {
                         FusionSlam.getInstance().decreseSensorCount();
                     }
                     if (camera.detectError(currentTick)) {
-                        sendBroadcast(new CrashedBroadcast(camera.errorDescription(currentTick),"Camera"+camera.getId()
-                                ,camera.getLastStampedDetectedObject(currentTick),
+                        StatisticalFolder.getInstance().updateLastFramesCameras(camera.getId(),camera.getLastStampedDetectedObject(currentTick));
+                        sendBroadcast(new CrashedBroadcast(camera.errorDescription(currentTick),"Camera"+camera.getId(),
                                 LiDarDataBase.getInstance().getCloudPoints(camera.getLastDetectedObject(currentTick)),
-                                FusionSlam.getInstance().getPoses()));
+                                FusionSlam.getInstance().getPoses(),currentTick));
                         StatisticalFolder.getInstance().subRuntime();
                         terminate();
                     }
@@ -80,6 +80,7 @@ public class CameraService extends MicroService {
         });
 
         this.subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast crash) -> {
+            StatisticalFolder.getInstance().updateLastFramesCameras(camera.getId(), camera.getLastStampedDetectedObject(crash.getErrorTick()));
             terminate();
         });
    }
