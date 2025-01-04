@@ -38,12 +38,15 @@ public class Camera {
         Initalizer(configPath,filePath);
     }
 
+    public int getId(){
+        return id;
+    }
+
     public static String resolvePath(String basePath, String relativePath) {
         File baseFile = new File(basePath).getParentFile(); // Get directory of the base file
         File resolvedFile = new File(baseFile, relativePath);
         return resolvedFile.getAbsolutePath();
     }
-
 
     public void Initalizer(String config,String filePath) {
        try
@@ -133,8 +136,22 @@ public class Camera {
             }
         }
         return new ArrayList<>();
+    }
+
+    public StampedDetectedObjects getLastStampedDetectedObject(int currTick) {
+        StampedDetectedObjects s=null;
+        for (StampedDetectedObjects stampedObject : detectedObjectsList) {
+            if (stampedObject.getTime() < currTick) {
+                s=stampedObject;
+            }
+            else {
+                return s;
+            }
+        }
+        return s;
 
     }
+
     public List<DetectedObject> getLastDetectedObject(int currTick) {
         List<DetectedObject> l=new ArrayList<>();
         for (StampedDetectedObjects stampedObject : detectedObjectsList) {

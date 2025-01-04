@@ -37,8 +37,10 @@ public class TimeService extends MicroService {
     protected void initialize() {
         // Start broadcasting TickBroadcast messages at regular intervals
         Thread timeThread = new Thread(() -> {
+            StatisticalFolder.getInstance().setTickTime(TickTime);
             while (currentTick < duration) {
-                StatisticalFolder.getInstance().incrementRuntime(TickTime);
+
+                StatisticalFolder.getInstance().incrementRuntime();
                 // Wait for the duration of one tick
                 try {
                     Thread.sleep(TickTime);

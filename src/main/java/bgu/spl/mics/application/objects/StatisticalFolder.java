@@ -14,6 +14,7 @@ public class StatisticalFolder {
     private int numOfDetectedObjects;
     private int numTrackedObjects;
     private int numLandmarks;
+    private int tickTime;
 
     private static class StatisticalFolderHolder {
         private static final StatisticalFolder instance = new StatisticalFolder();
@@ -24,9 +25,12 @@ public class StatisticalFolder {
         this.numOfDetectedObjects = 0;
         this.numTrackedObjects = 0;
         this.numLandmarks = 0;
+        this.tickTime = 0;
     }
 
     public static StatisticalFolder getInstance() {return StatisticalFolderHolder.instance;}
+
+    public void setTickTime(int tickTime) {this.tickTime = tickTime;}
 
     public int getSystemRuntime() { return systemRuntime; }
 
@@ -36,8 +40,12 @@ public class StatisticalFolder {
 
     public int getNumLandmarks() { return numLandmarks; }
 
-    public synchronized void incrementRuntime(int tick) {
-        this.systemRuntime=this.systemRuntime+tick;
+    public synchronized void incrementRuntime() {
+        this.systemRuntime=this.systemRuntime+tickTime;
+    }
+
+    public synchronized void subRuntime(){
+        this.systemRuntime=this.systemRuntime-tickTime;
     }
 
     public synchronized void addDetectedObjects(int count) {
@@ -61,7 +69,7 @@ public class StatisticalFolder {
         jsonContent += "\"numLandmarks\": " + numLandmarks + "," + "\n";
         jsonContent += "\"LandMarks\": { \n";
         for(LandMark l:FusionSlam.getInstance().getLandmarks()){
-            jsonContent += "\""+l.getId()+"\"" +":{"+"\"id\":" +"\""+ l.getId()+"\""+","  + "\"description\":" +"\""+ l.getDescription() +"\""+","+ "\"coordinates\":[";
+            jsonContent += "    \""+l.getId()+"\"" +":{"+"\"id\":" +"\""+ l.getId()+"\""+","  + "\"description\":" +"\""+ l.getDescription() +"\""+","+ "\"coordinates\":[";
             for (CloudPoint point : l.getCoordinates()){
                 jsonContent += "{"+"\"x\":" +point.getX() + ",\"y\":" +point.getY() + "},";
             }
@@ -86,55 +94,55 @@ public class StatisticalFolder {
             }
 
 
-    });
+        });
         writerThread.start();
-}
+    }
 
         public synchronized void createOutputFileError(String filePath, String errorDescription, String errorSource,
                                                    List<DetectedObject> detectedObjects,
                                                   ArrayList<ArrayList<CloudPoint>> cloudPoints, List<Pose> robotPoses) {
-            // Start creating the JSON content
             String jsonContent = "{";
 
-            // Add error information if applicable
+            jsonContent += "\"error\": \"" + errorDescription + "\",\n";
+            jsonContent += "  \"faultySensor\": \"" + errorSource + "\",\n";
+            jsonContent += "  \"lastCamerasFrame\": {"+"\n";
 
-                jsonContent += "\"error\": \"" + errorDescription + "\",\n";
-                jsonContent += "  \"faultySensor\": \"" + errorSource + "\",\n";
-                jsonContent += "  \"lastCamerasFrame\": {"+"\n";
-                if (detectedObjects != null && !detectedObjects.isEmpty()) {
-                    for (DetectedObject detectedObject : detectedObjects) {
-                        jsonContent += "    \"Camera" + "\": {";
-                        jsonContent += "\"time\": " + this.systemRuntime + ",";
-                        jsonContent += "\"detectedObjects\": [";
-                        jsonContent += "{\"id\": \"" + detectedObject.getId() + "\",";
-                        jsonContent += "\"description\": \"" + detectedObject.getDescription() + "\"}";
-                        jsonContent += "]}," + "\n";
-                    }
-                    jsonContent = jsonContent.substring(0, jsonContent.length() - 2); // Remove trailing comma
-                }
-                jsonContent += "\n";
-                jsonContent += "  },\n";
-                jsonContent += "  \"lastLiDarWorkerTrackersFrame\": {"+"\n";
-
-                int index = 0;
-
-                jsonContent += "    \"LiDarWorkerTracker" + "\": [";
-                for (DetectedObject detectedObject : detectedObjects) {
-                    jsonContent += "{\"id\": \"" + detectedObject.getId() + "\",";
+            //int i =1;
+            if (detectedObjects != null && !detectedObjects.isEmpty()) {
+                DetectedObject d =detectedObjects.get(detectedObjects.size()-1);
+                //for (DetectedObject detectedObject : detectedObjects) {
+                    jsonContent += "    \"Camera" +"\": {";
                     jsonContent += "\"time\": " + this.systemRuntime + ",";
-                    jsonContent += "\"description\": \"" + detectedObject.getDescription() + "\",";
-                    if (!cloudPoints.isEmpty() && index!=cloudPoints.size()-1) {
-                        ArrayList<CloudPoint> pointArr = cloudPoints.get(index);
-                        for (CloudPoint point : pointArr) {
+                    jsonContent += "\"detectedObjects\": [";
+                    jsonContent += "{\"id\": \"" + d.getId() + "\",";
+                    jsonContent += "\"description\": \"" + d.getDescription() + "\"}";
+                    jsonContent += "]}," + "\n";
+                //}
+                jsonContent = jsonContent.substring(0, jsonContent.length() - 2); // Remove trailing comma
+            }
+            jsonContent += "\n";
+            jsonContent += "  },\n";
+            jsonContent += "  \"lastLiDarWorkerTrackersFrame\": {"+"\n";
 
-                                jsonContent += "\"coordinates\": [";
-                                jsonContent += "{\"x\": " + point.getX() + ",\"y\": " + point.getY() + "},";
+            int index = 0;
 
-                        }
-                        jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // Remove trailing comma
-                        jsonContent += "]},";
+            jsonContent += "    \"LiDarWorkerTracker" + "\": [";
+            for (DetectedObject detectedObject : detectedObjects) {
+                jsonContent += "{\"id\": \"" + detectedObject.getId() + "\",";
+                jsonContent += "\"time\": " + this.systemRuntime + ",";
+                jsonContent += "\"description\": \"" + detectedObject.getDescription() + "\",";
+                if (!cloudPoints.isEmpty() && index!=cloudPoints.size()-1) {
+                    ArrayList<CloudPoint> pointArr = cloudPoints.get(index);
+                    for (CloudPoint point : pointArr) {
+
+                        jsonContent += "\"coordinates\": [";
+                        jsonContent += "{\"x\": " + point.getX() + ",\"y\": " + point.getY() + "},";
+
                     }
+                    jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // Remove trailing comma
+                    jsonContent += "]},";
                 }
+            }
             jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // Remove trailing comma
             jsonContent += "]";
             jsonContent += "\n  },\n";
