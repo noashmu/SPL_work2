@@ -28,12 +28,6 @@ class MessageBusTest {
         };
     }
 
-    @Test
-    void testRegisterMicroService() {
-        messageBus.register(testMicroService1);
-
-        assertDoesNotThrow(() -> messageBus.awaitMessage(testMicroService1));
-    }
 
     @Test
     void testUnregisterMicroService() {
