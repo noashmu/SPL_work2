@@ -99,7 +99,7 @@ public class StatisticalFolder {
     }
 
         public synchronized void createOutputFileError(String filePath, String errorDescription, String errorSource,
-                                                   List<DetectedObject> detectedObjects,
+                                                   StampedDetectedObjects detectedObjects,
                                                   ArrayList<ArrayList<CloudPoint>> cloudPoints, List<Pose> robotPoses) {
             String jsonContent = "{";
 
@@ -108,11 +108,11 @@ public class StatisticalFolder {
             jsonContent += "  \"lastCamerasFrame\": {"+"\n";
 
             //int i =1;
-            if (detectedObjects != null && !detectedObjects.isEmpty()) {
-                DetectedObject d =detectedObjects.get(detectedObjects.size()-1);
+            if (detectedObjects != null && !detectedObjects.getDetectedObjects().isEmpty()) {
+                DetectedObject d =detectedObjects.getDetectedObjects().get(detectedObjects.getDetectedObjects().size()-1);
                 //for (DetectedObject detectedObject : detectedObjects) {
                     jsonContent += "    \"Camera" +"\": {";
-                    jsonContent += "\"time\": " + this.systemRuntime + ",";
+                    jsonContent += "\"time\": " + detectedObjects.getTime() + ",";
                     jsonContent += "\"detectedObjects\": [";
                     jsonContent += "{\"id\": \"" + d.getId() + "\",";
                     jsonContent += "\"description\": \"" + d.getDescription() + "\"}";
@@ -127,9 +127,10 @@ public class StatisticalFolder {
             int index = 0;
 
             jsonContent += "    \"LiDarWorkerTracker" + "\": [";
-            for (DetectedObject detectedObject : detectedObjects) {
+            assert detectedObjects != null;
+            for (DetectedObject detectedObject : detectedObjects.getDetectedObjects()) {
                 jsonContent += "{\"id\": \"" + detectedObject.getId() + "\",";
-                jsonContent += "\"time\": " + this.systemRuntime + ",";
+                jsonContent += "\"time\": " + detectedObjects.getTime() + ",";
                 jsonContent += "\"description\": \"" + detectedObject.getDescription() + "\",";
                 if (!cloudPoints.isEmpty() && index!=cloudPoints.size()-1) {
                     ArrayList<CloudPoint> pointArr = cloudPoints.get(index);

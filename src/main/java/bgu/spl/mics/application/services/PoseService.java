@@ -31,9 +31,10 @@ public class PoseService extends MicroService {
     @Override
     protected void initialize() {
         this.subscribeBroadcast(TickBroadcast.class, (TickBroadcast tick) -> {
+            StampedDetectedObjects s = new StampedDetectedObjects(tick.getTick(),LiDarDataBase.getInstance().getDetectedObjectsList());
             if (gpsimu.getStatus().equals(STATUS.ERROR)) {
                 sendBroadcast(new CrashedBroadcast("Sensor GPSIMU disconnected","GPSIMU"
-                        , LiDarDataBase.getInstance().getDetectedObjectsList(), LiDarDataBase.getInstance().getCloudPoints(LiDarDataBase.getInstance().getDetectedObjectsList()), gpsimu.getPoseList()));
+                        , s, LiDarDataBase.getInstance().getCloudPoints(LiDarDataBase.getInstance().getDetectedObjectsList()), gpsimu.getPoseList()));
                 StatisticalFolder.getInstance().subRuntime();
                 terminate();
             }

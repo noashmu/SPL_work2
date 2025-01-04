@@ -11,7 +11,7 @@ public class StampedDetectedObjects {
     private int time;
     private List<DetectedObject> DetectedObjects;
 
-    public StampedDetectedObjects(int time,ArrayList<DetectedObject> l) {
+    public StampedDetectedObjects(int time,List<DetectedObject> l) {
         this.time = time;
         this.DetectedObjects = l;
     }

@@ -4,6 +4,7 @@ import bgu.spl.mics.Broadcast;
 import bgu.spl.mics.application.objects.CloudPoint;
 import bgu.spl.mics.application.objects.DetectedObject;
 import bgu.spl.mics.application.objects.Pose;
+import bgu.spl.mics.application.objects.StampedDetectedObjects;
 
 
 import java.util.ArrayList;
@@ -12,12 +13,12 @@ import java.util.List;
 public class CrashedBroadcast implements Broadcast {
     private final String errorDescription;
     private final String sensorCausingError;
-    private List<DetectedObject> detectedObjects;
+    private StampedDetectedObjects detectedObjects;
     private ArrayList<ArrayList<CloudPoint>> cloudPoints;
     private List<Pose> poseList;
 
     public CrashedBroadcast(String errorDescription, String sensorCausingError,
-                            List<DetectedObject> detectedObjects, ArrayList<ArrayList<CloudPoint>> cloudPoints,
+                            StampedDetectedObjects detectedObjects, ArrayList<ArrayList<CloudPoint>> cloudPoints,
                             List<Pose> poseList) {
         this.errorDescription = errorDescription;
         this.sensorCausingError = sensorCausingError;
@@ -34,7 +35,7 @@ public class CrashedBroadcast implements Broadcast {
         return sensorCausingError;
     }
 
-    public List<DetectedObject> getDetectedObjects(){
+    public StampedDetectedObjects getDetectedObjects(){
         return detectedObjects;
     }
 

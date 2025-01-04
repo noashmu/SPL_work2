@@ -45,8 +45,9 @@ public class LiDarService extends MicroService {
                         points.add(tracked.getCoordinates());
                     }
 
+                    StampedDetectedObjects s= new StampedDetectedObjects(event.getTime(),event.getDetectedObjects());
                     sendBroadcast(new CrashedBroadcast("Sensor Lidar disconnected",
-                            "Lidar"+LiDarWorkerTracker.getId(),event.getDetectedObjects(),
+                            "Lidar"+LiDarWorkerTracker.getId(),s,
                             points,FusionSlam.getInstance().getPoses()));
                     StatisticalFolder.getInstance().subRuntime();
                     terminate();
