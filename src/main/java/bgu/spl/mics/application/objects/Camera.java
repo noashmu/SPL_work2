@@ -37,6 +37,14 @@ public class Camera {
         this.countDetected=0;
         Initalizer(configPath,filePath);
     }
+    public Camera(int id, int frequency, STATUS status, String cameraKey) {
+        this.id = id;
+        this.frequency = frequency;
+        this.status = status;
+        this.detectedObjectsList = new ArrayList<>();
+        this.cameraKey=cameraKey;
+        this.countDetected=0;
+    }
 
     public int getId(){
         return id;
@@ -182,6 +190,10 @@ public class Camera {
             }
         }
         return false;
+    }
+    public void TurnOnCamera()
+    {
+        this.status=STATUS.UP;
     }
 
     //אולי צריך לאחד את זה עם הפעולה הקודמת
