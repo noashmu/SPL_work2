@@ -9,6 +9,7 @@ import bgu.spl.mics.application.messages.DetectObjectsEvent;
 import bgu.spl.mics.application.messages.TerminatedBroadcast;
 import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.objects.*;
+//import jdk.javadoc.internal.doclets.toolkit.taglets.UserTaglet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,25 +51,26 @@ public class CameraService extends MicroService {
                     DetectObjectsEvent detectObjectsEvent = camera.createDetectObjectsEvent(currentTick);
                     camera.setCountDetected(camera.getCountDetected()-detectObjectsEvent.getDetectedObjects().size());
 
-                    if (detectObjectsEvent != null) {
-                        StatisticalFolder.getInstance().addDetectedObjects(detectObjectsEvent.getDetectedObjects().size());
-                        sendEvent(detectObjectsEvent);
-                        StatisticalFolder.getInstance().addTrackedObjects(detectObjectsEvent.getDetectedObjects().size());
-                    }
+
                     if (camera.getCountDetected()<=0)
                     {
                         camera.TurnOffCamera();
                         FusionSlam.getInstance().decreseSensorCount();
                     }
+                    if (camera.detectError(currentTick)) {
+                        sendBroadcast(new CrashedBroadcast(camera.errorDescription(currentTick),"Camera"+camera.getId()
+                                ,camera.getLastDetectedObject(currentTick),
+                                LiDarDataBase.getInstance().getCloudPoints(camera.getLastDetectedObject(currentTick)),
+                                FusionSlam.getInstance().getPoses()));
+                        StatisticalFolder.getInstance().subRuntime();
+                        terminate();
+                    }
+                    else { //else if (detectObjectsEvent != null)
+                        StatisticalFolder.getInstance().addDetectedObjects(detectObjectsEvent.getDetectedObjects().size());
+                        sendEvent(detectObjectsEvent);
+                        StatisticalFolder.getInstance().addTrackedObjects(detectObjectsEvent.getDetectedObjects().size());
+                    }
                 }
-            }
-
-            if (camera.detectError(currentTick)) {
-                sendBroadcast(new CrashedBroadcast(camera.errorDescription(currentTick),"Camera"
-                        ,camera.getVeryLastDetectedObject(currentTick),
-                        LiDarDataBase.getInstance().getCloudPoints(camera.getLastDetectedObject(currentTick)),
-                        FusionSlam.getInstance().getPoses()));
-                terminate();
             }
         });
 

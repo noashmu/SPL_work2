@@ -12,16 +12,16 @@ import java.util.List;
 public class CrashedBroadcast implements Broadcast {
     private final String errorDescription;
     private final String sensorCausingError;
-    private DetectedObject detectedObject;
+    private List<DetectedObject> detectedObjects;
     private ArrayList<ArrayList<CloudPoint>> cloudPoints;
     private List<Pose> poseList;
 
     public CrashedBroadcast(String errorDescription, String sensorCausingError,
-                            DetectedObject detectedObject, ArrayList<ArrayList<CloudPoint>> cloudPoints,
+                            List<DetectedObject> detectedObjects, ArrayList<ArrayList<CloudPoint>> cloudPoints,
                             List<Pose> poseList) {
         this.errorDescription = errorDescription;
         this.sensorCausingError = sensorCausingError;
-        this.detectedObject = detectedObject;
+        this.detectedObjects = detectedObjects;
         this.cloudPoints = cloudPoints;
         this.poseList = poseList;
     }
@@ -34,8 +34,8 @@ public class CrashedBroadcast implements Broadcast {
         return sensorCausingError;
     }
 
-    public DetectedObject getDetectedObjects(){
-        return detectedObject;
+    public List<DetectedObject> getDetectedObjects(){
+        return detectedObjects;
     }
 
     public ArrayList<ArrayList<CloudPoint>> getCloudPoints(){
