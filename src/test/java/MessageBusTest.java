@@ -28,7 +28,8 @@ class MessageBusTest {
         };
     }
 
-
+    // Preconditions: The MessageBus and MicroService are initialized. The MicroService is registered with the MessageBus.
+    // Postconditions: The MicroService is unregistered, and attempting to await a message for the unregistered MicroService throws an IllegalStateException.
     @Test
     void testUnregisterMicroService() {
         messageBus.register(testMicroService1);
@@ -37,6 +38,8 @@ class MessageBusTest {
         assertThrows(IllegalStateException.class, () -> messageBus.awaitMessage(testMicroService1));
     }
 
+    // Preconditions: The MessageBus and MicroService are initialized. The MicroService is registered and subscribed to an event type.
+    // Postconditions: Sending an event of the subscribed type results in the MicroService receiving it.
     @Test
     void testSubscribeEvent() {
         class TestEvent implements Event<Boolean> {}
@@ -53,6 +56,8 @@ class MessageBusTest {
         });
     }
 
+    // Preconditions: The MessageBus and two MicroServices are initialized. Both MicroServices are registered and subscribed to a broadcast type.
+    // Postconditions: Sending a broadcast results in both MicroServices receiving the broadcast.
     @Test
     void testSubscribeBroadcast() {
         class TestBroadcast implements Broadcast {}
@@ -75,6 +80,8 @@ class MessageBusTest {
         });
     }
 
+    // Preconditions: The MessageBus and MicroService are initialized. The MicroService is registered and subscribed to an event type.
+    // Postconditions: Sending an event of the subscribed type results in the MicroService receiving it, and a valid Future object is returned.
     @Test
     void testSendEvent() {
         class TestEvent implements Event<String> {}
@@ -92,6 +99,8 @@ class MessageBusTest {
         });
     }
 
+    // Preconditions: The MessageBus and MicroService are initialized. The MicroService is registered and subscribed to an event type.
+    // Postconditions: Completing an event updates the associated Future object with the result, which can then be retrieved.
     @Test
     void testCompleteEvent() {
         class TestEvent implements Event<String> {}
@@ -109,11 +118,15 @@ class MessageBusTest {
         assertEquals("Result", future.get());
     }
 
+    // Preconditions: The MessageBus and MicroService are initialized. The MicroService is not registered with the MessageBus.
+    // Postconditions: Attempting to await a message for the unregistered MicroService throws an IllegalStateException.
     @Test
     void testAwaitMessageThrowsExceptionForUnregisteredMicroService() {
         assertThrows(IllegalStateException.class, () -> messageBus.awaitMessage(testMicroService1));
     }
 
+    // Preconditions: The MessageBus is initialized, and no MicroServices are subscribed to the broadcast type.
+    // Postconditions: Sending a broadcast does not throw any exceptions.
     @Test
     void testSendBroadcastWithNoSubscribers() {
         class TestBroadcast implements Broadcast {}
@@ -122,6 +135,8 @@ class MessageBusTest {
         assertDoesNotThrow(() -> messageBus.sendBroadcast(broadcast));
     }
 
+    // Preconditions: The MessageBus is initialized, and no MicroServices are subscribed to the event type.
+    // Postconditions: Sending an event returns null, indicating no subscribers.
     @Test
     void testSendEventWithNoSubscribers() {
         class TestEvent implements Event<String> {}
@@ -132,6 +147,8 @@ class MessageBusTest {
         assertNull(future);
     }
 
+    // Preconditions: The MessageBus and two MicroServices are initialized. Both MicroServices are registered and subscribed to the same event type.
+    // Postconditions: Events are distributed in a round-robin manner between the subscribed MicroServices.
     @Test
     void testRoundRobinEventHandling() {
         class TestEvent implements Event<String> {}

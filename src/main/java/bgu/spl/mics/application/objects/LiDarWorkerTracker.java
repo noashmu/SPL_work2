@@ -30,20 +30,20 @@ public class LiDarWorkerTracker {
         this.frequency = frequency;
         this.status = status;
         lastTrackedObjects = new ArrayList<TrackedObject>();
-        this.filePath=filePath;
-        Initalizer(config,filePath);
+        this.filePath = filePath;
+        Initalizer(config, filePath);
 
 
     }
-    public boolean isActive()
-    {
-        if (this.status==STATUS.UP)
+
+    public boolean isActive() {
+        if (this.status == STATUS.UP)
             return true;
         return false;
     }
-    public void turnOff()
-    {
-        this.status=STATUS.DOWN;
+
+    public void turnOff() {
+        this.status = STATUS.DOWN;
     }
 
     public static String resolvePath(String basePath, String relativePath) {
@@ -51,10 +51,10 @@ public class LiDarWorkerTracker {
         File resolvedFile = new File(baseFile, relativePath);
         return resolvedFile.getAbsolutePath();
     }
-    public void Initalizer(String config,String filePath)
-    {
+
+    public void Initalizer(String config, String filePath) {
         try {
-            String resolvedPath = resolvePath(config,filePath);
+            String resolvedPath = resolvePath(config, filePath);
 
             JsonArray lidarDataArray = JsonParser.parseReader(new FileReader(resolvedPath)).getAsJsonArray();
 
@@ -69,12 +69,12 @@ public class LiDarWorkerTracker {
                     JsonArray point = pointElement.getAsJsonArray();
                     double x = point.get(0).getAsDouble();
                     double y = point.get(1).getAsDouble();
-                    cloudPoints.add(new CloudPoint(x,y));
-                    LiDarDataBase.getInstance().addCloudPoints(new StampedCloudPoints(id,time), x,y);
+                    cloudPoints.add(new CloudPoint(x, y));
+                    LiDarDataBase.getInstance().addCloudPoints(new StampedCloudPoints(id, time), x, y);
                 }
 
-                DetectedObject d=LiDarDataBase.getInstance().getObjectFromID(id,time);
-                lastTrackedObjects.add(new TrackedObject(d,cloudPoints,time));
+                DetectedObject d = LiDarDataBase.getInstance().getObjectFromID(id, time);
+                lastTrackedObjects.add(new TrackedObject(d, cloudPoints, time));
             }
         } catch (IOException e) {
             System.err.println("Error reading lidar data file: " + e.getMessage());
@@ -83,23 +83,24 @@ public class LiDarWorkerTracker {
         }
     }
 
-    public int getId()
-    {
+    public int getId() {
         return this.id;
     }
 
-    public List<TrackedObject> getLastTrackedObjects(){
+    public List<TrackedObject> getLastTrackedObjects() {
         return this.lastTrackedObjects;
     }
 
-    public void setLastTrackedObjects(List<DetectedObject> detectedObjectList, int time){
-        this.lastTrackedObjects = new ArrayList<>();
-        ArrayList<CloudPoint> cloudPoints = LiDarDataBase.getInstance().getCloudPoints(detectedObjectList,time);
-
-        for(DetectedObject detectedObject : detectedObjectList){
-            this.lastTrackedObjects.add(new TrackedObject(detectedObject,cloudPoints, time));
+    public void setLastTrackedObjects(List<DetectedObject> detectedObjectList, int time) {
+        //ArrayList<ArrayList<CloudPoint>> cloudPoints = LiDarDataBase.getInstance().getCloudPoints(detectedObjectList, time);
+      //  int i = 0;
+        ArrayList<CloudPoint> cloudPoints = new ArrayList<>();
+        for (DetectedObject detectedObject : detectedObjectList) {
+             cloudPoints= LiDarDataBase.getInstance().getCloudPoints2(detectedObject, time);
+            this.lastTrackedObjects.add(new TrackedObject(detectedObject, cloudPoints, time));
         }
     }
+
 
     public boolean shouldSendEvent(int currTick) {
         if(!lastTrackedObjects.isEmpty()) {

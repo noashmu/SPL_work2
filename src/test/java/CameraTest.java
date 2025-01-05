@@ -44,23 +44,33 @@ public class CameraTest {
         camera.getDetectedObjectsList().add(s3);
     }
 
+    // Preconditions: The camera object is initialized in the setUp() method.
+    // Postconditions: The camera should be initialized, and its detected objects list should be empty.
     @Test
     public void testInitialization() {
         assertNotNull(camera, "Camera should be initialized.");
         assertTrue(camera.getDetectedObject(0).isEmpty(), "Camera should not detect objects before initialization.");
     }
 
+
+    // Preconditions: The camera object is initialized with an ID of 1 in the setUp() method.
+    // Postconditions: The camera's ID should be equal to 1
     @Test
     public void testGetID()
     {
         assertEquals(1,camera.getId());
     }
+
+    // Preconditions: The camera object is initialized with STATUS.UP in the setUp() method.
+    // Postconditions: The camera's status should be UP.
     @Test
     public void testGetStatus()
     {
         assertEquals(STATUS.UP,camera.getStatus());
     }
 
+    // Preconditions: The camera object is initialized with STATUS.UP in the setUp() method.
+    // Postconditions: The camera should be active when the status is UP, and inactive when the status is DOWN.
     @Test
     public void testIsActive() {
         assertTrue(camera.isActive(), "Camera should be active when status is UP.");
@@ -68,6 +78,8 @@ public class CameraTest {
         assertFalse(camera.isActive(), "Camera should be inactive when status is DOWN.");
     }
 
+    // Preconditions: The camera is initialized with a frequency of 5 in the setUp() method.
+    // Postconditions: The camera should send an event at the right time according to her frequency.
     @Test
     public void testShouldSendEvent() {
         assertTrue(camera.shouldSendEvent(9), "Camera should send an event at the correct frequency.");
@@ -76,12 +88,16 @@ public class CameraTest {
     }
 
 
+    // Preconditions: The camera is initialized, and the tick is provided as 5.
+    // Postconditions: A DetectObjectsEvent should be created for the provided tick.
     @Test
     public void testCreateDetectObjectsEvent() {
         DetectObjectsEvent event = camera.createDetectObjectsEvent(5);
         assertNotNull(event, "DetectObjectsEvent should be created for valid tick.");
     }
 
+    // Preconditions: The camera is initialized with a detected objects list containing an error at tick 8.
+    // Postconditions: The camera should correctly detect the error at tick 8 and not detect errors at other ticks.
     @Test
     public void testDetectError() {
         boolean hasError = camera.detectError(10);
@@ -90,6 +106,9 @@ public class CameraTest {
         assertTrue(hasError,"error in detected object didn't detect by the camera");
     }
 
+
+    // Preconditions: The camera is initialized with an error at tick 8 in its detected objects list.
+    // Postconditions: The error description should be null if no error is detected, and should match the expected error description otherwise.
     @Test
     public void testErrorDescription() {
         String description = camera.errorDescription(10);
@@ -98,12 +117,16 @@ public class CameraTest {
         assertEquals("Error",description,"error message");
     }
 
+    // Preconditions: The camera is initialized with a detected objects list containing 3 objects.
+    // Postconditions: The size of the detected objects list should be 3.
     @Test
     public void testGetDetectedObjectList()
     {
         assertEquals(3,camera.getDetectedObjectsList().size());
     }
 
+    // Preconditions: The camera is initialized with a detected objects list where tick 2 has 2 detected objects.
+    // Postconditions: The size of the detected objects list for tick 2 should be 2.
     @Test
     public void testGetDetectedObjectbyTick()
     {

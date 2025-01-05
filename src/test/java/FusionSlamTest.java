@@ -25,6 +25,8 @@ public class FusionSlamTest {
         fusionSlam.setLandmarks(new ArrayList<>());
     }
 
+    // Preconditions: The FusionSlam instance is initialized and has an empty list of landmarks.
+    // Postconditions: The landmark list size should increase by one, and the added landmark's ID should match the expected value.
     @Test
     public void testAddLandMark() {
         LandMark landmark = new LandMark("1", "Landmark 1");
@@ -34,6 +36,8 @@ public class FusionSlamTest {
         assertEquals("1", fusionSlam.getLandmarks().get(0).getId(), "Expected landmark ID to match");
     }
 
+    // Preconditions: The FusionSlam instance is initialized, and one landmark is added with ID "1".
+    // Postconditions: The method should return false for a tracked object matching an existing landmark and true for a new tracked object.
     @Test
     public void testIsNewLandmark() {
         LandMark landmark = new LandMark("1", "Landmark 1");
@@ -46,6 +50,8 @@ public class FusionSlamTest {
         assertTrue(fusionSlam.isNewLandmark(newTrackedObject), "Expected newTrackedObject to be identified as new");
     }
 
+    // Preconditions: The FusionSlam instance is initialized, and a landmark with ID "1" is added. A tracked object with updated coordinates is created.
+    // Postconditions: The landmark's coordinates should be updated to match the tracked object's coordinates.
     @Test
     public void testUpdateLandMark() {
         LandMark landmark = new LandMark("1", "Landmark 1");
@@ -66,6 +72,8 @@ public class FusionSlamTest {
         assertEquals(20, coordinates.get(0).getY(), "Expected updated y-coordinate to match.");
     }
 
+    // Preconditions: The FusionSlam instance is initialized with an empty pose list.
+    // Postconditions: The pose list size should increase by one, and the added pose should match the expected value.
     @Test
     public void testAddPose() {
         Pose pose = new Pose(5.0, 10.0, Math.PI / 4, 1);
@@ -76,6 +84,9 @@ public class FusionSlamTest {
         assertEquals(pose, poses.get(0), "Expected pose to match the added pose.");
     }
 
+
+    // Preconditions: The FusionSlam instance is initialized, and two poses are added with timestamps 1 and 2, respectively.
+    // Postconditions: The method should return the pose for a requested time.
     @Test
     public void testGetCurrentPose() {
         Pose pose1 = new Pose(5.0, 10.0, Math.PI / 4, 1);

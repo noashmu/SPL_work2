@@ -14,12 +14,12 @@ public class CrashedBroadcast implements Broadcast {
     private final String errorDescription;
     private final String sensorCausingError;
     //private StampedDetectedObjects detectedObjects;
-    private ArrayList<CloudPoint> cloudPoints;
+    private ArrayList<ArrayList<CloudPoint>> cloudPoints;
     private List<Pose> poseList;
     private int errorTick;
 
     public CrashedBroadcast(String errorDescription, String sensorCausingError,
-                            ArrayList<CloudPoint> cloudPoints,
+                            ArrayList<ArrayList<CloudPoint>> cloudPoints,
                             List<Pose> poseList, int errorTick) {
         this.errorDescription = errorDescription;
         this.sensorCausingError = sensorCausingError;
@@ -41,7 +41,7 @@ public class CrashedBroadcast implements Broadcast {
         //return detectedObjects;
     //}
 
-    public ArrayList<CloudPoint> getCloudPoints(){
+    public ArrayList<ArrayList<CloudPoint>> getCloudPoints(){
         return cloudPoints;
     }
 
