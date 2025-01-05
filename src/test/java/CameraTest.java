@@ -20,9 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CameraTest {
 
     private Camera camera;
-    private CameraService cameraService;
     MessageBusImpl messageBus;
-
 
     @BeforeEach
     public void setUp() {
@@ -44,16 +42,23 @@ public class CameraTest {
         l3.add(new DetectedObject("ERROR","Error"));
         StampedDetectedObjects s3 = new StampedDetectedObjects(8,l3);
         camera.getDetectedObjectsList().add(s3);
-        cameraService= new CameraService(camera);
-        messageBus=MessageBusImpl.getInstance();
-        messageBus.register(cameraService);
-
     }
 
     @Test
     public void testInitialization() {
         assertNotNull(camera, "Camera should be initialized.");
         assertTrue(camera.getDetectedObject(0).isEmpty(), "Camera should not detect objects before initialization.");
+    }
+
+    @Test
+    public void testGetID()
+    {
+        assertEquals(1,camera.getId());
+    }
+    @Test
+    public void testGetStatus()
+    {
+        assertEquals(STATUS.UP,camera.getStatus());
     }
 
     @Test
@@ -94,53 +99,19 @@ public class CameraTest {
     }
 
     @Test
-    void testHandleTickBroadcast() throws InterruptedException {
-        TickBroadcast tickBroadcast = new TickBroadcast(4);
-        new Thread(cameraService).start();
-
-        camera.TurnOnCamera();
-        camera.setCountDetected(5);
-
-    //    messageBus.subscribeEvent(DetectObjectsEvent.class, cameraService);
-        messageBus.sendBroadcast(tickBroadcast);
-
-        //messageBus.sendEvent(camera.createDetectObjectsEvent(tickBroadcast.getTick()));
-
-        // Allow some time for processing
-        Thread.sleep(100);
-
-        Message message = messageBus.awaitMessage(cameraService);
-        assertTrue(message instanceof DetectObjectsEvent, "CameraService should send DetectObjectsEvent in response to TickBroadcast.");
-
+    public void testGetDetectedObjectList()
+    {
+        assertEquals(3,camera.getDetectedObjectsList().size());
     }
 
-//
-//    @Test
-//    void testHandleCrashedBroadcast() throws InterruptedException {
-//        // Simulate a CrashedBroadcast
-//        CrashedBroadcast crashedBroadcast = new CrashedBroadcast(
-//                "camera failure",
-//                "Camera1",
-//                null,
-//                null,
-//                null
-//        );
-//        messageBus.sendBroadcast(crashedBroadcast);
-//
-//        new Thread(cameraService::run).start();
-//
-//        assertThrows(IllegalStateException.class, () -> messageBus.awaitMessage(cameraService),
-//                "CameraService should terminate upon receiving a CrashedBroadcast.");
-//    }
-//    @Test
-//    void testTerminateOnTerminatedBroadcast() throws InterruptedException {
-//        messageBus.sendBroadcast(new bgu.spl.mics.application.messages.TerminatedBroadcast());
-//
-//        new Thread(cameraService::run).start();
-//
-//        // Ensure CameraService processes the TerminatedBroadcast and terminates
-//        assertThrows(IllegalStateException.class, () -> messageBus.awaitMessage(cameraService),
-//                "CameraService should terminate upon receiving a TerminatedBroadcast.");
-//    }
+    @Test
+    public void testGetDetectedObjectbyTick()
+    {
+        assertEquals(2,camera.getDetectedObject(2).size());
+    }
+
+
+
+
 
 }

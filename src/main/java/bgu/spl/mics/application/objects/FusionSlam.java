@@ -80,6 +80,10 @@ public void updateLandMark(TrackedObject obj)
     {
         this.sensorCount=count;
     }
+    public void setLandmarks(ArrayList<LandMark> l)
+    {
+        this.landmarks=l;
+    }
 
 }
 

@@ -77,7 +77,6 @@ public class StatisticalFolder {
 
     public synchronized void createOutputFile(String filePath, boolean noterror, List<DetectedObject> detectedObjects,
                                               ArrayList<ArrayList<CloudPoint>> cloudPoints, List<Pose> robotPoses) {
-        if(noterror==false){
             String jsonContent = "{";
             jsonContent += "\"systemRuntime\": " + systemRuntime + ",";
             jsonContent += "\"numDetectedObjects\": " + numOfDetectedObjects + ",";
@@ -110,7 +109,7 @@ public class StatisticalFolder {
                 }
             });
             writerThread.start();
-        }
+
 
     }
 
@@ -160,7 +159,8 @@ public class StatisticalFolder {
                     jsonContent += "\"time\": " + entry.getValue().getTime() + ",";
                     jsonContent += "\"description\": \"" + entry.getValue().getDescription() + "\",";
                     if (!cloudPoints.isEmpty() && index!=cloudPoints.size()-1) {
-                        ArrayList<CloudPoint> pointArr = cloudPoints.get(index);
+                        //ArrayList<CloudPoint> pointArr = cloudPoints.get(index);
+                        ArrayList<CloudPoint> pointArr=  entry.getValue().getCoordinates();
                         for (CloudPoint point : pointArr) {
 
                             jsonContent += "\"coordinates\": [";
@@ -196,12 +196,14 @@ public class StatisticalFolder {
             jsonContent += "\n  },\n";
             // Add robot poses
             jsonContent += "  \"poses\": [";
-            if (!robotPoses.isEmpty()) {
+            if (robotPoses!=null && !robotPoses.isEmpty()) {
                 for (Pose pose : robotPoses) {
-                    jsonContent += "{\"time\": " + pose.getTime() + ",";
-                    jsonContent += "\"x\": " + pose.getX()+ ",";
-                    jsonContent += "\"y\": " + pose.getY() + ",";
-                    jsonContent += "\"yaw\": " + pose.getYaw() + "},";
+                    if (pose!=null) {
+                        jsonContent += "{\"time\": " + pose.getTime() + ",";
+                        jsonContent += "\"x\": " + pose.getX() + ",";
+                        jsonContent += "\"y\": " + pose.getY() + ",";
+                        jsonContent += "\"yaw\": " + pose.getYaw() + "},";
+                    }
                 }
                 jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // Remove trailing comma
             }

@@ -74,8 +74,8 @@ public class LiDarService extends MicroService {
                 }
                 if (LiDarDataBase.getInstance().getTrackedObjectsCount() <= 0) {
                     FusionSlam.getInstance().decreseSensorCount();
-                    List<TrackedObject> trackedObjectList = LiDarWorkerTracker.getLastTrackedObjects();
-                    StatisticalFolder.getInstance().updateLastFramesLidars(LiDarWorkerTracker.getId(), trackedObjectList.get(trackedObjectList.size()-1));
+               //     List<TrackedObject> trackedObjectList = LiDarWorkerTracker.getLastTrackedObjects();
+                 //   StatisticalFolder.getInstance().updateLastFramesLidars(LiDarWorkerTracker.getId(), trackedObjectList.get(trackedObjectList.size()-1));
                     LiDarWorkerTracker.turnOff();
                 }
             }

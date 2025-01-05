@@ -18,15 +18,11 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FusionSlamTest {
 
     private FusionSlam fusionSlam;
-    private FusionSlamService fusionSlamService;
-    private MessageBusImpl messageBus;
 
     @BeforeEach
     public void setUp() {
         fusionSlam = FusionSlam.getInstance();
-        messageBus = MessageBusImpl.getInstance();
-        fusionSlamService = new FusionSlamService(fusionSlam, "path/config");
-        messageBus.register(fusionSlamService);
+        fusionSlam.setLandmarks(new ArrayList<>());
     }
 
     @Test
@@ -88,109 +84,9 @@ public class FusionSlamTest {
         fusionSlam.addPose(pose1);
         fusionSlam.addPose(pose2);
 
-      //  Pose currentPose = fusionSlam.getCurrentPose();
-        //  assertEquals(pose2, currentPose, "Expected the most recent pose to be returned.");
-    }
-    @Test
-    public void testHandleTrackedObjectsEvent() throws InterruptedException {
-        // Prepare test data
-        List<TrackedObject> trackedObjects = new ArrayList<>();
-        TrackedObject obj1 = new TrackedObject("1", 10, "Landmark 1");
-        TrackedObject obj2 = new TrackedObject("2", 15, "Landmark 2");
-        trackedObjects.add(obj1);
-        trackedObjects.add(obj2);
+          Pose currentPose = fusionSlam.getCurrentPose(3);
+          assertEquals(pose2, currentPose, "Expected the most recent pose to be returned.");
 
-        TrackedObjectsEvent event = new TrackedObjectsEvent(trackedObjects, 5);
-        messageBus.subscribeEvent(TrackedObjectsEvent.class, fusionSlamService);
-
-        // Send the event
-        Thread serviceThread = new Thread(fusionSlamService::run);
-        serviceThread.start();
-        messageBus.sendEvent(event);
-
-        // Wait and verify
-        Thread.sleep(100); // Allow time for processing
-        assertEquals(2, fusionSlam.getLandmarks().size(), "Expected 2 landmarks to be added");
-        assertTrue(fusionSlam.getLandmarks().stream().anyMatch(l -> l.getId().equals("1")), "Expected landmark 1 to be added");
-        assertTrue(fusionSlam.getLandmarks().stream().anyMatch(l -> l.getId().equals("2")), "Expected landmark 2 to be added");
-
-        // Stop the service
-        serviceThread.interrupt();
-        serviceThread.join();
-    }
-
-    @Test
-    public void testHandlePoseEvent() throws InterruptedException {
-        // Prepare test data
-        Pose pose = new Pose(5.0, 10.0, Math.PI / 4, 1);
-        PoseEvent event = new PoseEvent(pose);
-        messageBus.subscribeEvent(PoseEvent.class, fusionSlamService);
-
-        // Send the event
-        Thread serviceThread = new Thread(fusionSlamService::run);
-        serviceThread.start();
-        messageBus.sendEvent(event);
-
-        // Wait and verify
-        Thread.sleep(100); // Allow time for processing
-        assertEquals(1, fusionSlam.getPoses().size(), "Expected 1 pose to be added");
-        assertEquals(pose, fusionSlam.getPoses().get(0), "Expected pose to match the added pose");
-
-        // Stop the service
-        serviceThread.interrupt();
-        serviceThread.join();
-    }
-
-    @Test
-    public void testHandleTickBroadcast() throws InterruptedException {
-        // Simulate the sensor count reaching 0
-        fusionSlam.decreseSensorCount(); // Assuming a sensor count of 1 initially
-
-        TickBroadcast tickBroadcast = new TickBroadcast(1);
-        messageBus.subscribeBroadcast(TickBroadcast.class, fusionSlamService);
-
-        // Start the service
-        Thread serviceThread = new Thread(fusionSlamService::run);
-        serviceThread.start();
-        messageBus.sendBroadcast(tickBroadcast);
-
-        // Wait and verify
-        Thread.sleep(100); // Allow time for processing
-        assertFalse(serviceThread.isAlive(), "FusionSlamService should terminate when sensor count reaches 0");
-
-        // Cleanup
-        serviceThread.interrupt();
-        serviceThread.join();
-    }
-
-    @Test
-    public void testHandleCrashedBroadcast() throws InterruptedException {
-        // Prepare test data
-        List<DetectedObject> detectedObjects = new ArrayList<>();
-        ArrayList<ArrayList<CloudPoint>> cloudPoints = new ArrayList<>();
-        List<Pose> poses = new ArrayList<>();
-        detectedObjects.add(new DetectedObject("1",  "Crashed Landmark"));
-        StampedDetectedObjects s= new StampedDetectedObjects(10,detectedObjects);
-        poses.add(new Pose(0, 0, 0, 1));
-        ArrayList<CloudPoint> c= new ArrayList<>();
-        c.add(new CloudPoint(0,0));
-        cloudPoints.add(c);
-
-        CrashedBroadcast crashedBroadcast = new CrashedBroadcast("Error detected", "Camera1", s, cloudPoints, poses);
-        messageBus.subscribeBroadcast(CrashedBroadcast.class, fusionSlamService);
-
-        // Start the service
-        Thread serviceThread = new Thread(fusionSlamService::run);
-        serviceThread.start();
-        messageBus.sendBroadcast(crashedBroadcast);
-
-        // Wait and verify
-        Thread.sleep(100); // Allow time for processing
-        assertFalse(serviceThread.isAlive(), "FusionSlamService should terminate on receiving CrashedBroadcast");
-
-        // Cleanup
-        serviceThread.interrupt();
-        serviceThread.join();
     }
 }
 

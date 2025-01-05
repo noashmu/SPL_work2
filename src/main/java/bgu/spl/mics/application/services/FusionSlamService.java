@@ -56,10 +56,12 @@ public class FusionSlamService extends MicroService {
                             fusionSlam.addLandMark(newLandMark);
                             fusionSlam.updateLandMark(obj);
                             StatisticalFolder.getInstance().addLandmark();
+
                         }
                         else {
                             fusionSlam.updateLandMark(obj);
                         }
+
                     }
 
                     this.complete(event, true);
