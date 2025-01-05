@@ -73,7 +73,7 @@ public class LiDarWorkerTracker {
                     LiDarDataBase.getInstance().addCloudPoints(new StampedCloudPoints(id,time), x,y);
                 }
 
-                DetectedObject d=LiDarDataBase.getInstance().getObjectFromID(id);
+                DetectedObject d=LiDarDataBase.getInstance().getObjectFromID(id,time);
                 lastTrackedObjects.add(new TrackedObject(d,cloudPoints,time));
             }
         } catch (IOException e) {
@@ -94,12 +94,10 @@ public class LiDarWorkerTracker {
 
     public void setLastTrackedObjects(List<DetectedObject> detectedObjectList, int time){
         this.lastTrackedObjects = new ArrayList<>();
-        ArrayList<ArrayList<CloudPoint>> cloudPoints = LiDarDataBase.getInstance().getCloudPoints(detectedObjectList);
-        int i=0;
+        ArrayList<CloudPoint> cloudPoints = LiDarDataBase.getInstance().getCloudPoints(detectedObjectList,time);
 
         for(DetectedObject detectedObject : detectedObjectList){
-            this.lastTrackedObjects.add(new TrackedObject(detectedObject,cloudPoints.get(i), time));
-            i++;
+            this.lastTrackedObjects.add(new TrackedObject(detectedObject,cloudPoints, time));
         }
     }
 

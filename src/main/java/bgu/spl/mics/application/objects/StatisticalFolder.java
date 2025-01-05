@@ -114,7 +114,7 @@ public class StatisticalFolder {
     }
 
         public synchronized void createOutputFileError(String filePath, String errorDescription, String errorSource,
-                                                  ArrayList<ArrayList<CloudPoint>> cloudPoints, List<Pose> robotPoses) {
+                                                  ArrayList<CloudPoint> cloudPoints, List<Pose> robotPoses) {
             String jsonContent = "{";
 
             jsonContent += "\"error\": \"" + errorDescription + "\",\n";
@@ -161,9 +161,10 @@ public class StatisticalFolder {
                     if (!cloudPoints.isEmpty() && index!=cloudPoints.size()-1) {
                         //ArrayList<CloudPoint> pointArr = cloudPoints.get(index);
                         ArrayList<CloudPoint> pointArr=  entry.getValue().getCoordinates();
+                        jsonContent += "\"coordinates\": [";
+
                         for (CloudPoint point : pointArr) {
 
-                            jsonContent += "\"coordinates\": [";
                             jsonContent += "{\"x\": " + point.getX() + ",\"y\": " + point.getY() + "},";
 
                         }

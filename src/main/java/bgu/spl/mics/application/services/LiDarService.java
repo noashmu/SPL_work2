@@ -40,9 +40,9 @@ public class LiDarService extends MicroService {
             try {
 
                 if (LiDarWorkerTracker.detectError()) {
-                    ArrayList<ArrayList<CloudPoint>> points = new ArrayList<>();
+                    ArrayList<CloudPoint> points = new ArrayList<>();
                     for (TrackedObject tracked: LiDarWorkerTracker.getLastTrackedObjects()){
-                        points.add(tracked.getCoordinates());
+                        points.addAll(tracked.getCoordinates());
                     }
 
                     StampedDetectedObjects s= new StampedDetectedObjects(event.getTime(),event.getDetectedObjects());

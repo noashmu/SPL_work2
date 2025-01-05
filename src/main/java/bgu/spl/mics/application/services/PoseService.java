@@ -35,7 +35,7 @@ public class PoseService extends MicroService {
             if (gpsimu.getStatus().equals(STATUS.ERROR)) {
                 //StatisticalFolder.getInstance().updateLastFramesCameras(s);
                 sendBroadcast(new CrashedBroadcast("Sensor GPSIMU disconnected","GPSIMU"
-                        ,LiDarDataBase.getInstance().getCloudPoints(LiDarDataBase.getInstance().getDetectedObjectsList()),
+                        ,LiDarDataBase.getInstance().getCloudPoints(LiDarDataBase.getInstance().getDetectedObjectsList(),tick.getTick()),
                         gpsimu.getPoseList(),tick.getTick()));
                 StatisticalFolder.getInstance().subRuntime();
                 terminate();
