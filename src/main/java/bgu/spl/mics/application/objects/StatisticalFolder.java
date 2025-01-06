@@ -192,7 +192,7 @@ public class StatisticalFolder {
             jsonContent += "}}";
             jsonContent += "}";
 
-            final String filePath2 = filePath + "/output_file.json";
+            final String filePath2 = filePath + "/OutputError.json";
             final String js2=jsonContent;
             Thread writerThread = new Thread(() -> {
                 //      filePath = filePath + "/output.json";
