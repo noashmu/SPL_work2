@@ -73,10 +73,6 @@ public class LiDarService extends MicroService {
                     LiDarDataBase.getInstance().setTrackedObjectsCount(LiDarDataBase.getInstance().getTrackedObjectsCount()
                             - trackedObjectsEvent.getTrackedObjects().size());
                 }
-                if (LiDarDataBase.getInstance().getTrackedObjectsCount() <= 0) {
-                    FusionSlam.getInstance().decreseSensorCount();
-                    LiDarWorkerTracker.turnOff();
-                }
             }
         });
 
