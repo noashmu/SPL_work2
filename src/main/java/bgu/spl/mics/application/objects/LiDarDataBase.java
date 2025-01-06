@@ -29,12 +29,11 @@ public class LiDarDataBase {
      * @return The singleton instance of LiDarDataBase.
      */
     public static LiDarDataBase getInstance() {
-        //   LidarDataBaseHolder.instance.loadDataFromFile(filePath); //not sure its good
         return LidarDataBaseHolder.instance;
     }
 
     public ArrayList<ArrayList<CloudPoint>> getCloudPoints(List<DetectedObject> detectedObjectList, int time) {
-        ArrayList<ArrayList<CloudPoint>> cloudPointArrayList = new ArrayList<>(); //each list represent the points of detected object
+        ArrayList<ArrayList<CloudPoint>> cloudPointArrayList = new ArrayList<>();
 
         for (StampedCloudPoints stampedCloudPoints : cloudPoints) {
             for (DetectedObject detectedObject : detectedObjectList) {
@@ -46,15 +45,6 @@ public class LiDarDataBase {
                     cloudPointArrayList.add(cloudPointArray);
                 }
             }
-//            for(int i=0; i<detectedObjectList.size(); i++) {
-//                if(stampedCloudPoints.getId().equals(detectedObjectList.get(i).getId())) {
-//                    ArrayList<CloudPoint> cloudPointArray = new ArrayList<>();
-//                    for(List<Double> points: stampedCloudPoints.getPoints()){
-//                        cloudPointArray.add(new CloudPoint(points.get(0), points.get(1)));
-//                    }
-//                    cloudPointArrayList.add(i, cloudPointArray);
-//                }
-//            }
         }
 
         return cloudPointArrayList;
@@ -79,17 +69,16 @@ public class LiDarDataBase {
     }
     public DetectedObject getObjectFromID(String id,int time)
     {
-            for (DetectedObject d : detectedObjectsDB) {
-                if (d.getId().equals(id)) {
-                    for (StampedCloudPoints s:cloudPoints) {
-                        if (d.getId().equals(s.getId())&&s.getTime()==time)
-                            return d;
-                    }
-
+        for (DetectedObject d : detectedObjectsDB) {
+            if (d.getId().equals(id)) {
+                for (StampedCloudPoints s:cloudPoints) {
+                    if (d.getId().equals(s.getId())&&s.getTime()==time)
+                        return d;
                 }
-            }
-            return null;
 
+            }
+        }
+        return null;
     }
 
     public void addCloudPoints(StampedCloudPoints stampedCloudPoints, double x, double y) {

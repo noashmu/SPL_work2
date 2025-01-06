@@ -1,7 +1,6 @@
 package bgu.spl.mics.application.objects;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Represents a group of cloud points corresponding to a specific timestamp.

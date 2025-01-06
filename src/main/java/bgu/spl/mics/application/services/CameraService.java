@@ -1,7 +1,6 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.MicroService;
 
 
 import bgu.spl.mics.application.messages.CrashedBroadcast;
@@ -9,16 +8,11 @@ import bgu.spl.mics.application.messages.DetectObjectsEvent;
 import bgu.spl.mics.application.messages.TerminatedBroadcast;
 import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.objects.*;
-//import jdk.javadoc.internal.doclets.toolkit.taglets.UserTaglet;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
  * CameraService is responsible for processing data from the camera and
  * sending DetectObjectsEvents to LiDAR workers.
- * 
  * This service interacts with the Camera object to detect objects and updates
  * the system's StatisticalFolder upon sending its observations.
  */
@@ -51,7 +45,6 @@ public class CameraService extends MicroService {
                     DetectObjectsEvent detectObjectsEvent = camera.createDetectObjectsEvent(currentTick);
                     camera.setCountDetected(camera.getCountDetected()-detectObjectsEvent.getDetectedObjects().size());
 
-
                     if (camera.getCountDetected()<=0)
                     {
                         camera.TurnOffCamera();
@@ -65,7 +58,7 @@ public class CameraService extends MicroService {
                         StatisticalFolder.getInstance().subRuntime();
                         terminate();
                     }
-                    else { //else if (detectObjectsEvent != null)
+                    else {
                         StatisticalFolder.getInstance().addDetectedObjects(detectObjectsEvent.getDetectedObjects().size());
                         sendEvent(detectObjectsEvent);
                         StatisticalFolder.getInstance().addTrackedObjects(detectObjectsEvent.getDetectedObjects().size());

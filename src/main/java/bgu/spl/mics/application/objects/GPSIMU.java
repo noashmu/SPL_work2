@@ -23,11 +23,11 @@ public class GPSIMU {
     public GPSIMU(int currentTick, STATUS status,String filePath,String config) {
         this.currentTick = currentTick;
         this.status = status;
-        poseList = new ArrayList<Pose>();
+        poseList = new ArrayList<>();
         Initalizer(config,filePath);
     }
     public static String resolvePath(String basePath, String relativePath) {
-        File baseFile = new File(basePath).getParentFile(); // Get directory of the base file
+        File baseFile = new File(basePath).getParentFile();
         File resolvedFile = new File(baseFile, relativePath);
         return resolvedFile.getAbsolutePath();
     }
@@ -35,9 +35,7 @@ public class GPSIMU {
     {
         try {
             String resolvedPath = resolvePath(config,filePath);
-
             JsonArray poseDataArray = JsonParser.parseReader(new FileReader(resolvedPath)).getAsJsonArray();
-
             for (JsonElement element : poseDataArray) {
                 JsonObject poseObject = element.getAsJsonObject();
                 int time = poseObject.get("time").getAsInt();

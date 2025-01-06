@@ -1,16 +1,10 @@
-import bgu.spl.mics.MessageBusImpl;
-import bgu.spl.mics.application.messages.CrashedBroadcast;
-import bgu.spl.mics.application.messages.PoseEvent;
-import bgu.spl.mics.application.messages.TickBroadcast;
-import bgu.spl.mics.application.messages.TrackedObjectsEvent;
+
 import bgu.spl.mics.application.objects.*;
 
-import bgu.spl.mics.application.services.FusionSlamService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -95,9 +89,8 @@ public class FusionSlamTest {
         fusionSlam.addPose(pose1);
         fusionSlam.addPose(pose2);
 
-          Pose currentPose = fusionSlam.getCurrentPose(3);
-          assertEquals(pose2, currentPose, "Expected the most recent pose to be returned.");
-
+        Pose currentPose = fusionSlam.getCurrentPose(3);
+        assertEquals(pose2, currentPose, "Expected the most recent pose to be returned.");
     }
 }
 

@@ -19,40 +19,41 @@ public class FusionSlam {
         this.landmarks=new ArrayList<>();
         this.poses=new ArrayList<>();
     }
+
     // Singleton instance holder
     private static class FusionSlamHolder {
         // TODO: Implement singleton instance logic.
         private static final FusionSlam INSTANCE = new FusionSlam();
     }
 
-public static FusionSlam getInstance() {
+    public static FusionSlam getInstance() {
     return FusionSlamHolder.INSTANCE;
 }
 
-public boolean isNewLandmark(TrackedObject obj)
-   {
+    public boolean isNewLandmark(TrackedObject obj)
+    {
        for (LandMark l:landmarks)
        {
            if (obj.getId().equals(l.getId()))
                return false;
        }
        return true;
-   }
+    }
 
-public void addLandMark(LandMark landMark)
-{
+    public void addLandMark(LandMark landMark)
+    {
     this.landmarks.add(landMark);
-}
+    }
 
-public void updateLandMark(TrackedObject obj)
-{
-    for (LandMark landMark : landmarks) {
-        if (landMark.getId().equals(obj.getId())) {
-            landMark.updateCoordinates(obj.getCoordinates());
-            return;
+    public void updateLandMark(TrackedObject obj)
+    {
+        for (LandMark landMark : landmarks) {
+            if (landMark.getId().equals(obj.getId())) {
+                landMark.updateCoordinates(obj.getCoordinates());
+                return;
+            }
         }
     }
-}
 
     public void addPose(Pose p)
 {

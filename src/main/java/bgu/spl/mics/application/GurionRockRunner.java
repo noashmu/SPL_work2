@@ -7,11 +7,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.Console;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.lang.reflect.Type;
-import java.rmi.server.Skeleton;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,13 +51,12 @@ public class GurionRockRunner {
                             cameraConfig.get("frequency").getAsInt(),
                             STATUS.UP,
                             cameraConfig.get("camera_key").getAsString(),
-                            camerasObject.get("camera_datas_path").getAsString(),configPath // Accessing the shared path
+                            camerasObject.get("camera_datas_path").getAsString(),configPath
                     );
                     cameras.add(camera);
                     sensorCount++;
                 }
 
-              //  System.out.println("Cameras parsed: " + cameras);
             } else {
                 System.out.println("CamerasConfigurations not found in the JSON.");
             }
@@ -79,13 +75,11 @@ public class GurionRockRunner {
                             lidarConfig.get("id").getAsInt(),
                             lidarConfig.get("frequency").getAsInt(),
                             STATUS.UP,
-                            lidarDataPath,configPath // Use the shared path
+                            lidarDataPath,configPath
                     );
                     lidarWorkers.add(lidar);
-                   // sensorCount++;
                 }
 
-               // System.out.println("LidarWorkers parsed: " + lidarWorkers);
             } else {
                 System.out.println("LidarConfigurations not found in the JSON.");
             }
@@ -106,31 +100,17 @@ public class GurionRockRunner {
                 microservices.add(new Thread(new PoseService(gpsimu)));
                 microservices.add(new Thread(new FusionSlamService(fusionSlam,configPath)));
 
-                // Initialize TimeService
                 TimeService timeService = new TimeService(tickTime, duration);
                 microservices.add(new Thread(timeService));
 
-                //start all services
                 for (Thread service : microservices) {
                     service.start();
                 }
 
-
-            // Wait for all services to finish
                 for (Thread service : microservices) {
                     service.join();
                 }
-            //    StatisticalFolder s = StatisticalFolder.getInstance();
-
-                //String outputPath = configPath.replace("config.json", "output_file.json");
-                //try (FileWriter writer = new FileWriter(outputPath)) {
-                //   gson.toJson(s.createOutputFile(configPath,), writer);
-                //  }
-
-                //  try (FileWriter writer = new FileWriter(outputPath)) {
-                //    gson.toJson(fusionSlam.generateOutput(), writer);
             }
-
         catch (Exception e)
         {
             System.out.println(e.getMessage());

@@ -10,9 +10,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.io.File;
 
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -51,7 +49,7 @@ public class Camera {
     }
 
     public static String resolvePath(String basePath, String relativePath) {
-        File baseFile = new File(basePath).getParentFile(); // Get directory of the base file
+        File baseFile = new File(basePath).getParentFile();
         File resolvedFile = new File(baseFile, relativePath);
         return resolvedFile.getAbsolutePath();
     }
@@ -59,43 +57,32 @@ public class Camera {
     public void Initalizer(String config,String filePath) {
        try
         {
-
-            // Parse the camera data JSON file
             String resolvedPath = resolvePath(config,filePath);
-
             JsonObject cameraDataJson = JsonParser.parseReader(new FileReader(resolvedPath)).getAsJsonObject();
-
-
-            // Retrieve the data for this specific camera using the camera key
             JsonArray cameraArray = cameraDataJson.getAsJsonArray(cameraKey);
 
             if (cameraArray == null) {
                 return;
             }
+            for (JsonElement innerElement: cameraArray) {
+                JsonObject detectedObject = innerElement.getAsJsonObject();
+                int time = detectedObject.get("time").getAsInt();
+                JsonArray detectedObjectsJsonArray = detectedObject.getAsJsonArray("detectedObjects");
+                ArrayList<DetectedObject> detectedObjectsListForTime = new ArrayList<>();
+                for (JsonElement objElement : detectedObjectsJsonArray) {
+                    JsonObject obj = objElement.getAsJsonObject();
+                    String id = obj.get("id").getAsString();
+                    String description = obj.get("description").getAsString();
+                    DetectedObject d=new DetectedObject(id, description);
+                    detectedObjectsListForTime.add(d);
+                    LiDarDataBase.getInstance().getDetectedObjectsList().add(d);
+                    this.countDetected++;
 
-            // Process the detected objects
-          //  for (JsonElement outerElement : cameraArray) {
-               // JsonArray innerArray =outerElement.getAsJsonArray();
-                for (JsonElement innerElement: cameraArray) {
-                    JsonObject detectedObject = innerElement.getAsJsonObject();
-                    int time = detectedObject.get("time").getAsInt();
-                    JsonArray detectedObjectsJsonArray = detectedObject.getAsJsonArray("detectedObjects");
-                    ArrayList<DetectedObject> detectedObjectsListForTime = new ArrayList<>();
-                    for (JsonElement objElement : detectedObjectsJsonArray) {
-                        JsonObject obj = objElement.getAsJsonObject();
-                        String id = obj.get("id").getAsString();
-                        String description = obj.get("description").getAsString();
-                        DetectedObject d=new DetectedObject(id, description);
-                        detectedObjectsListForTime.add(d);
-                        LiDarDataBase.getInstance().getDetectedObjectsList().add(d);
-                        this.countDetected++;
-
-                    }
-                    detectedObjectsList.add(new StampedDetectedObjects(time, detectedObjectsListForTime));
                 }
-            LiDarDataBase.getInstance().setTrackedObjectsCount(countDetected);
+                detectedObjectsList.add(new StampedDetectedObjects(time, detectedObjectsListForTime));
+            }
 
-            //    }
+            LiDarDataBase.getInstance().setTrackedObjectsCount(countDetected);
 
         } catch (IOException e) {
             System.err.println("Error reading camera data file: " + e.getMessage());
@@ -103,22 +90,19 @@ public class Camera {
             System.err.println("Error initializing camera: " + e.getMessage());
         }
     }
+
     public void setCountDetected(int count)
     {
         this.countDetected=count;
     }
+
     public int getCountDetected()
     {
         return this.countDetected;
     }
 
-
-
-
     public boolean isActive() {
-        if (status.equals(STATUS.UP))
-            return true;
-        return false;
+        return status.equals(STATUS.UP);
     }
     public void TurnOffCamera()
     {
@@ -133,9 +117,7 @@ public class Camera {
             }
         }
         return false;
-
     }
-
 
     public List<DetectedObject> getDetectedObject(int currTick) {
         for (StampedDetectedObjects stampedObject : detectedObjectsList) {
@@ -157,7 +139,6 @@ public class Camera {
             }
         }
         return s;
-
     }
 
     public List<DetectedObject> getLastDetectedObject(int currTick) {
@@ -168,7 +149,6 @@ public class Camera {
             }
         }
         return l;
-
     }
 
 
@@ -196,7 +176,6 @@ public class Camera {
         this.status=STATUS.UP;
     }
 
-    //אולי צריך לאחד את זה עם הפעולה הקודמת
     public String errorDescription(int currTick)
     {
         List<DetectedObject> detectedObjects = getDetectedObject(currTick);

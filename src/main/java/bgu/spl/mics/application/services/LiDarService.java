@@ -35,7 +35,6 @@ public class LiDarService extends MicroService {
      */
     @Override
     protected void initialize() {
-        // לבדוק אם צריך לשלוח את האירוע בbroadcast או בevent
         this.subscribeEvent(DetectObjectsEvent.class, (DetectObjectsEvent event) -> {
             try {
 
@@ -47,7 +46,8 @@ public class LiDarService extends MicroService {
 
                     StampedDetectedObjects s= new StampedDetectedObjects(event.getTime(),event.getDetectedObjects());
                     List<TrackedObject> trackedObjectList = LiDarWorkerTracker.getLastTrackedObjects();
-                    StatisticalFolder.getInstance().updateLastFramesLidars(LiDarWorkerTracker.getId(), trackedObjectList.get(trackedObjectList.size()-1));
+                    StatisticalFolder.getInstance().updateLastFramesLidars(LiDarWorkerTracker.getId(),
+                            trackedObjectList.get(trackedObjectList.size()-1));
                     sendBroadcast(new CrashedBroadcast("Sensor Lidar disconnected",
                             "Lidar"+LiDarWorkerTracker.getId(),
                             points,FusionSlam.getInstance().getPoses(),event.getTime()));
@@ -70,12 +70,11 @@ public class LiDarService extends MicroService {
                 if (LiDarWorkerTracker.shouldSendEvent(event.getTick())) {
                     TrackedObjectsEvent trackedObjectsEvent = new TrackedObjectsEvent(LiDarWorkerTracker.getLastTrackedObjects(), event.getTick());
                     this.sendEvent(trackedObjectsEvent);
-                    LiDarDataBase.getInstance().setTrackedObjectsCount(LiDarDataBase.getInstance().getTrackedObjectsCount() - trackedObjectsEvent.getTrackedObjects().size());
+                    LiDarDataBase.getInstance().setTrackedObjectsCount(LiDarDataBase.getInstance().getTrackedObjectsCount()
+                            - trackedObjectsEvent.getTrackedObjects().size());
                 }
                 if (LiDarDataBase.getInstance().getTrackedObjectsCount() <= 0) {
                     FusionSlam.getInstance().decreseSensorCount();
-               //     List<TrackedObject> trackedObjectList = LiDarWorkerTracker.getLastTrackedObjects();
-                 //   StatisticalFolder.getInstance().updateLastFramesLidars(LiDarWorkerTracker.getId(), trackedObjectList.get(trackedObjectList.size()-1));
                     LiDarWorkerTracker.turnOff();
                 }
             }
@@ -89,7 +88,8 @@ public class LiDarService extends MicroService {
         this.subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast crash) -> {
             List<TrackedObject> trackedObjectList = LiDarWorkerTracker.getLastTrackedObjects();
             if(!trackedObjectList.isEmpty())
-                StatisticalFolder.getInstance().updateLastFramesLidars(LiDarWorkerTracker.getId(), trackedObjectList.get(trackedObjectList.size()-1));
+                StatisticalFolder.getInstance().updateLastFramesLidars(LiDarWorkerTracker.getId(),
+                        trackedObjectList.get(trackedObjectList.size()-1));
             terminate();
         });
     }

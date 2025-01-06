@@ -1,8 +1,6 @@
 package bgu.spl.mics.application.objects;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Represents an object tracked by the LiDAR.
@@ -34,10 +32,9 @@ public class TrackedObject {
     }
     public void transformToGlobalCoordinates(Pose currentPose) {
         for (CloudPoint point : coordinates) {
-            // Transform each CloudPoint's local coordinates to global coordinates
             double[] globalCoords = currentPose.transformToGlobal(point.getX(), point.getY());
-            point.setX(globalCoords[0]); // Update CloudPoint's x coordinate
-            point.setY(globalCoords[1]); // Update CloudPoint's y coordinate
+            point.setX(globalCoords[0]);
+            point.setY(globalCoords[1]);
         }
     }
 

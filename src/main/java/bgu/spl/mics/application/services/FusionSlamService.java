@@ -37,19 +37,16 @@ public class FusionSlamService extends MicroService {
      */
     @Override
     protected void initialize() {
-        // Handle TrackedObjectsEvent
         this.subscribeEvent(TrackedObjectsEvent.class, (TrackedObjectsEvent event) -> {
             synchronized (fusionSlam) {
                 try {
                     List<TrackedObject> trackedObjects = event.getTrackedObjects();
 
-                    // Transform cloud points to the charging station's coordinate system
                     for (TrackedObject obj : trackedObjects) {
                         Pose currentPose = fusionSlam.getCurrentPose(obj.getTime());
                         obj.transformToGlobalCoordinates(currentPose);
                     }
 
-                    // Add or update landmarks in the map
                     for (TrackedObject obj : trackedObjects) {
                         if (fusionSlam.isNewLandmark(obj)) {
                             LandMark newLandMark = new LandMark(obj.getId(),obj.getDescription());
@@ -63,7 +60,6 @@ public class FusionSlamService extends MicroService {
                         }
 
                     }
-
                     this.complete(event, true);
                 } catch (Exception e) {
                     this.complete(event, false);
@@ -86,14 +82,14 @@ public class FusionSlamService extends MicroService {
 
         this.subscribeBroadcast(TickBroadcast.class, (TickBroadcast tick) -> {
             if (fusionSlam.getSensorCount()<=0) {
-                StatisticalFolder.getInstance().createOutputFile(configPath, false, null, null, null);
+                StatisticalFolder.getInstance().createOutputFile(configPath, null, null, null);
                 this.sendBroadcast(new TerminatedBroadcast());
                 terminate();
 
             }
         });
         this.subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast term) -> {
-            StatisticalFolder.getInstance().createOutputFile(configPath,false, null, null, null);
+            StatisticalFolder.getInstance().createOutputFile(configPath, null, null, null);
             terminate();
         });
         this.subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast crash) -> {

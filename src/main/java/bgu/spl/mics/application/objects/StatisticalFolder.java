@@ -2,7 +2,6 @@ package bgu.spl.mics.application.objects;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,21 +30,13 @@ public class StatisticalFolder {
         this.numTrackedObjects = 0;
         this.numLandmarks = 0;
         this.tickTime = 0;
-        this.lastFramesCameras = new ConcurrentHashMap<Integer,StampedDetectedObjects>();
-        this.lastFramesLidars = new ConcurrentHashMap<Integer,TrackedObject>();
+        this.lastFramesCameras = new ConcurrentHashMap<>();
+        this.lastFramesLidars = new ConcurrentHashMap<>();
     }
 
     public static StatisticalFolder getInstance() {return StatisticalFolderHolder.instance;}
 
     public void setTickTime(int tickTime) {this.tickTime = tickTime;}
-
-    public int getSystemRuntime() { return systemRuntime; }
-
-    public int getNumOfDetectedObjects() { return numOfDetectedObjects; }
-
-    public int getNumTrackedObjects() { return numTrackedObjects; }
-
-    public int getNumLandmarks() { return numLandmarks; }
 
     public void updateLastFramesLidars(int id, TrackedObject trackedObject) {
         this.lastFramesLidars.put(id, trackedObject);
@@ -75,7 +66,7 @@ public class StatisticalFolder {
         this.numLandmarks++;
     }
 
-    public synchronized void createOutputFile(String filePath, boolean noterror, List<DetectedObject> detectedObjects,
+    public synchronized void createOutputFile(String filePath, List<DetectedObject> detectedObjects,
                                               ArrayList<ArrayList<CloudPoint>> cloudPoints, List<Pose> robotPoses) {
             String jsonContent = "{";
             jsonContent += "\"systemRuntime\": " + systemRuntime + ",";
@@ -97,7 +88,7 @@ public class StatisticalFolder {
             jsonContent = jsonContent.substring(0, jsonContent.length() - 2);
 
             jsonContent += "\n"+"}}";
-            final String filePath2 = filePath + "/output.json";
+            final String filePath2 = filePath + "/output_file.json";
             final String js2=jsonContent;
             Thread writerThread = new Thread(() -> {
                 //      filePath = filePath + "/output.json";
@@ -116,7 +107,6 @@ public class StatisticalFolder {
         public synchronized void createOutputFileError(String filePath, String errorDescription, String errorSource,
                                                   ArrayList<ArrayList<CloudPoint>> cloudPoints, List<Pose> robotPoses) {
             String jsonContent = "{";
-
             jsonContent += "\"error\": \"" + errorDescription + "\",\n";
             jsonContent += "  \"faultySensor\": \"" + errorSource + "\",\n";
             jsonContent += "  \"lastCamerasFrame\": {"+"\n";
@@ -134,19 +124,6 @@ public class StatisticalFolder {
                 jsonContent = jsonContent.substring(0, jsonContent.length() - 2);
             }
 
-
-//            if (lastFramesCameras != null && !lastFramesCameras.isEmpty()) {
-//                DetectedObject d =detectedObjects.getDetectedObjects().get(detectedObjects.getDetectedObjects().size()-1);
-//                //for (DetectedObject detectedObject : detectedObjects) {
-//                    jsonContent += "    \"Camera" +"\": {";
-//                    jsonContent += "\"time\": " + detectedObjects.getTime() + ",";
-//                    jsonContent += "\"detectedObjects\": [";
-//                    jsonContent += "{\"id\": \"" + d.getId() + "\",";
-//                    jsonContent += "\"description\": \"" + d.getDescription() + "\"}";
-//                    jsonContent += "]}," + "\n";
-//                //}
-//                jsonContent = jsonContent.substring(0, jsonContent.length() - 2); // Remove trailing comma
-//            }
             jsonContent += "\n";
             jsonContent += "  },\n";
             jsonContent += "  \"lastLiDarWorkerTrackersFrame\": {"+"\n";
@@ -160,41 +137,21 @@ public class StatisticalFolder {
                     jsonContent += "\"description\": \"" + entry.getValue().getDescription() + "\",";
                     jsonContent += "\"coordinates\": [";
                     if (!cloudPoints.isEmpty() && index!=cloudPoints.size()-1) {
-                        //ArrayList<CloudPoint> pointArr = cloudPoints.get(index);
                         ArrayList<CloudPoint> pointArr=  entry.getValue().getCoordinates();
                         for (CloudPoint point : pointArr) {
 
                             jsonContent += "{\"x\": " + point.getX() + ",\"y\": " + point.getY() + "},";
 
                         }
-                        jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // Remove trailing comma
+                        jsonContent = jsonContent.substring(0, jsonContent.length() - 1);
                         jsonContent += "]}],\n";
                         index++;
                     }
                 }
             }
 
-            //assert detectedObjects != null;
-//            for (DetectedObject detectedObject : detectedObjects.getDetectedObjects()) {
-//                jsonContent += "{\"id\": \"" + detectedObject.getId() + "\",";
-//                jsonContent += "\"time\": " + detectedObjects.getTime() + ",";
-//                jsonContent += "\"description\": \"" + detectedObject.getDescription() + "\",";
-//                if (!cloudPoints.isEmpty() && index!=cloudPoints.size()-1) {
-//                    ArrayList<CloudPoint> pointArr = cloudPoints.get(index);
-//                    for (CloudPoint point : pointArr) {
-//
-//                        jsonContent += "\"coordinates\": [";
-//                        jsonContent += "{\"x\": " + point.getX() + ",\"y\": " + point.getY() + "},";
-//
-//                    }
-//                    jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // Remove trailing comma
-//                    jsonContent += "]},";
-//                }
-//            }
-            jsonContent = jsonContent.substring(0, jsonContent.length() - 2); // Remove trailing comma
-            //jsonContent += "]";
+            jsonContent = jsonContent.substring(0, jsonContent.length() - 2);
             jsonContent += "\n  },\n";
-            // Add robot poses
             jsonContent += "  \"poses\": [";
             if (robotPoses!=null && !robotPoses.isEmpty()) {
                 for (Pose pose : robotPoses) {
@@ -205,12 +162,11 @@ public class StatisticalFolder {
                         jsonContent += "\"yaw\": " + pose.getYaw() + "},";
                     }
                 }
-                jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // Remove trailing comma
+                jsonContent = jsonContent.substring(0, jsonContent.length() - 1);
             }
             jsonContent += "],";
             jsonContent += "\n";
 
-            // Add statistics
             jsonContent += "  \"statistics\": {";
             jsonContent += "\"systemRuntime\": " + this.systemRuntime + ",";
             jsonContent += "\"numDetectedObjects\": " + this.numOfDetectedObjects+ ",";
@@ -226,20 +182,17 @@ public class StatisticalFolder {
                     jsonContent += "{\"x\": " + point.getX() + ",\"y\": " + point.getY() + "},";
                 }
                 if (!landMark.getCoordinates().isEmpty()) {
-                    jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // Remove trailing comma
+                    jsonContent = jsonContent.substring(0, jsonContent.length() - 1);
                 }
                 jsonContent += "]},";
             }
             if (!FusionSlam.getInstance().getLandmarks().isEmpty()) {
-                jsonContent = jsonContent.substring(0, jsonContent.length() - 1); // Remove trailing comma
+                jsonContent = jsonContent.substring(0, jsonContent.length() - 1);
             }
             jsonContent += "}}";
-
-            // Close JSON
             jsonContent += "}";
 
-            // Write JSON to file
-            final String filePath2 = filePath + "/output.json";
+            final String filePath2 = filePath + "/output_file.json";
             final String js2=jsonContent;
             Thread writerThread = new Thread(() -> {
                 //      filePath = filePath + "/output.json";
@@ -251,13 +204,5 @@ public class StatisticalFolder {
                 }
             });
             writerThread.start();
-//            final String outputFilePath = filePath + "/output.json";
-//
-//            try (FileWriter file = new FileWriter(outputFilePath)) {
-//                file.write(jsonContent);
-//                file.flush();
-//            } catch (IOException e) {
-//                System.err.println("Error creating the output file: " + e.getMessage());
-//            }
         }
     }
